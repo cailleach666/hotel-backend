@@ -1,6 +1,7 @@
 package org.example.backend.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.backend.exception.exceptions.NoSuchRoomException;
 import org.example.backend.model.Room;
 import org.example.backend.repository.RoomRepository;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class RoomService {
     }
 
     public Room getRoom(Long id) {
-        return roomRepository.findById(id).orElseThrow();
+        return roomRepository.findById(id).orElseThrow(() -> new NoSuchRoomException("Room not found!"));
     }
 
     public List<Room> getAllRooms() {
@@ -26,7 +27,7 @@ public class RoomService {
     }
 
     public Room updateRoom(Long id, Room room) {
-        Room roomToUpdate = roomRepository.findById(id).orElseThrow();
+        Room roomToUpdate = roomRepository.findById(id).orElseThrow(() -> new NoSuchRoomException("Room not found!"));
         roomToUpdate.setType(room.getType());
         roomToUpdate.setPrice(room.getPrice());
         roomToUpdate.setAvailable(room.isAvailable());
@@ -36,7 +37,7 @@ public class RoomService {
 
     public void deleteRoom(Long id) {
         if (!roomRepository.existsById(id)) {
-            throw new RuntimeException();
+            throw new NoSuchRoomException("Room not found!");
         }
         roomRepository.deleteById(id);
     }

@@ -1,6 +1,7 @@
 package org.example.backend.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.backend.exception.exceptions.NoSuchClientException;
 import org.example.backend.model.Client;
 import org.example.backend.repository.ClientRepository;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class ClientService {
     }
 
     public Client getClient(Long id) {
-        return clientRepository.findById(id).orElseThrow();
+        return clientRepository.findById(id).orElseThrow(() -> new NoSuchClientException("Client not found!"));
     }
 
     public List<Client> getAllClients() {
@@ -26,7 +27,8 @@ public class ClientService {
     }
 
     public Client updateClient(Long id, Client client) {
-        Client clientToUpdate = clientRepository.findById(id).orElseThrow();
+        Client clientToUpdate = clientRepository.findById(id)
+                .orElseThrow(() -> new NoSuchClientException("Client not found!"));
         clientToUpdate.setFirstname(client.getFirstname());
         clientToUpdate.setLastname(client.getLastname());
         clientToUpdate.setPhone(client.getPhone());

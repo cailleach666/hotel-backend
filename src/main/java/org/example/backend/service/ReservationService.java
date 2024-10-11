@@ -1,6 +1,7 @@
 package org.example.backend.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.backend.exception.exceptions.NoSuchReservationException;
 import org.example.backend.model.Reservation;
 import org.example.backend.repository.ReservationRepository;
 import org.springframework.stereotype.Service;
@@ -32,14 +33,15 @@ public class ReservationService {
     }
 
     public Reservation updateStatus(Long id, Reservation reservation) {
-        Reservation reservationToUpdate = reservationRepository.findById(id).orElseThrow();
+        Reservation reservationToUpdate = reservationRepository.findById(id)
+                .orElseThrow(() -> new NoSuchReservationException("Reservation not found!"));
         reservationToUpdate.setStatus(reservation.getStatus());
         return reservationRepository.save(reservationToUpdate);
     }
 
     public void deleteReservation(Long id) {
         if (!reservationRepository.existsById(id)) {
-            throw new RuntimeException();
+            throw new NoSuchReservationException("Reservation not found!");
         }
         reservationRepository.deleteById(id);
     }
