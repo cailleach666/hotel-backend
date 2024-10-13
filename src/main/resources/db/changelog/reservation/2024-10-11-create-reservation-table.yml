@@ -1,0 +1,64 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2024-10-11-create-reservation-table
+      author: yara
+      changes:
+        - createTable:
+            tableName: reservation
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+
+              - column:
+                  name: checkindate
+                  type: date
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: checkoutdate
+                  type: date
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: totalprice
+                  type: decimal(10, 2)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: status
+                  type: varchar(20)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: clientid
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: roomid
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: reservation
+            baseColumnNames: clientid
+            referencedTableName: client
+            referencedColumnNames: id
+            constraintName: fk_reservation_client
+
+        - addForeignKeyConstraint:
+            baseTableName: reservation
+            baseColumnNames: roomid
+            referencedTableName: room
+            referencedColumnNames: id
+            constraintName: fk_reservation_room

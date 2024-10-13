@@ -18,13 +18,14 @@ public class Reservation {
     private int id;
     private LocalDate checkindate;
     private LocalDate checkoutdate;
+    private Double totalprice;
     private String status;
 
-//    @ManyToOne
-//    @JoinColumn(name = "client_id")
-//    private Client client;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "room_id")
-//    private Room room;
+    @ManyToOne
+    @JoinColumn(name = "clientid")
+    private Client clientid;
+
+    @ManyToOne
+    @JoinColumn(name = "roomid")
+    private Room roomid;
 }

@@ -1,8 +1,6 @@
 package org.example.backend.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.backend.mappers.RoomMapper;
-import org.example.backend.model.Room;
 import org.example.backend.dtos.RoomDTO;
 import org.example.backend.service.RoomService;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +15,6 @@ import java.util.List;
 public class RoomController {
 
     private final RoomService roomService;
-    private final RoomMapper roomMapper;
 
     @PostMapping
     public ResponseEntity<RoomDTO> createRoom(@RequestBody RoomDTO roomDTO) {
