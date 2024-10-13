@@ -1,7 +1,9 @@
 package org.example.backend.controller;
 
+import lombok.RequiredArgsConstructor;
+import org.example.backend.mappers.RoomMapper;
 import org.example.backend.model.Room;
-import org.example.backend.model.RoomDTO;
+import org.example.backend.dtos.RoomDTO;
 import org.example.backend.service.RoomService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,44 +12,36 @@ import java.util.List;
 
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/rooms")
 public class RoomController {
 
     private final RoomService roomService;
-
-    public RoomController(RoomService roomService) {
-        this.roomService = roomService;
-    }
+    private final RoomMapper roomMapper;
 
     @PostMapping
-    public ResponseEntity<Room> createRoom(@RequestBody RoomDTO roomDTO) {
-        Room room = new Room();
-        room.setRoomnumber(roomDTO.getRoomnumber());
-        room.setPrice(roomDTO.getPrice());
-        room.setType(roomDTO.getType());
-        room.setAvailable(roomDTO.isAvailable());
-        room.setType(roomDTO.getType());
-        return ResponseEntity.ok(roomService.addRoom(room));
+    public ResponseEntity<RoomDTO> createRoom(@RequestBody RoomDTO roomDTO) {
+        return ResponseEntity.ok(roomService.createRoom(roomDTO));
     }
 
     @GetMapping
-    public ResponseEntity<List<Room>> getRooms() {
-        List<Room> rooms = roomService.getAllRooms();
-        return ResponseEntity.status(200).body(rooms);
+    public ResponseEntity<List<RoomDTO>> getRooms() {
+        List<RoomDTO> rooms = roomService.getAllRoomsDTO();
+        return ResponseEntity.ok(rooms);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Room> getRoomById(@PathVariable Long id) {
+    public ResponseEntity<RoomDTO> getRoom(@PathVariable Long id) {
         return ResponseEntity.ok(roomService.getRoom(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Room> updateRoom(@PathVariable Long id, @RequestBody Room room) {
-        return ResponseEntity.ok(roomService.updateRoom(id, room));
+    public ResponseEntity<RoomDTO> updateRoom(@PathVariable Long id, @RequestBody RoomDTO updatedRoomDTO) {
+        return ResponseEntity.ok(roomService.updateRoom(id, updatedRoomDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Room> deleteRoom(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteRoom(@PathVariable Long id) {
         roomService.deleteRoom(id);
         return ResponseEntity.noContent().build();
     }
