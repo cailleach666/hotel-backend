@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
-        id: 2024-10-11-create-client-table
-        author: arhrul
+        id: 2024-10-14-create-client-table
+        author: yara
         changes:
           - createTable:
               tableName: client
@@ -9,17 +9,18 @@ databaseChangeLog:
                 - column:
                     name: id
                     type: bigint
+                    autoIncrement: true
                     constraints:
                       primaryKey: true
 
                 - column:
-                    name: firstname
+                    name: first_name
                     type: varchar(50)
                     constraints:
                       nullable: false
 
                 - column:
-                    name: lastname
+                    name: last_name
                     type: varchar(50)
                     constraints:
                       nullable: false

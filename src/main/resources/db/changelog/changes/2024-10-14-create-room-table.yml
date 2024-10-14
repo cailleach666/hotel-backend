@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
-      id: 2024-10-11-create-room-table
-      author: your-name
+      id: 2024-10-14-create-room-table
+      author: yara
       changes:
         - createTable:
             tableName: room
@@ -9,11 +9,12 @@ databaseChangeLog:
               - column:
                   name: id
                   type: bigint
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
 
               - column:
-                  name: roomnumber
+                  name: room_number
                   type: varchar(50)
                   constraints:
                     nullable: false
