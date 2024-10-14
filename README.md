@@ -8,7 +8,7 @@ The application allows users to search for available rooms and make bookings thr
 
 ## How to Run the Application
 
-1. Ensure you have Java 17 and Gradle installed.  
+1. Ensure you have Java 21 and Gradle installed.  
 
 
 2. Clone the repository:  
