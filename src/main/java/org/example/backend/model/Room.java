@@ -10,7 +10,8 @@ public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String roomnumber;
+    @Column(name = "room_number")
+    private String roomNumber;
     private Double price;
     private boolean available;
     @Enumerated(EnumType.STRING)

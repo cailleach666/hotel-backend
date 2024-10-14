@@ -9,7 +9,7 @@ import org.example.backend.enums.RoomType;
 public class RoomDTO {
 
     private Long id;
-    private String roomnumber;
+    private String roomNumber;
     private Double price;
     private boolean available;
     private RoomType type;

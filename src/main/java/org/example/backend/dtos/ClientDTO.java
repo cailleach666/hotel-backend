@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 public class ClientDTO {
 
     private Long id;
-    private String firstname;
-    private String lastname;
+    private String firstName;
+    private String lastName;
     private String email;
     private String phone;
 

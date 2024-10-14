@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 2024-10-11-create-reservation-table
+      id: 2024-10-14-create-reservation-table
       author: yara
       changes:
         - createTable:
@@ -14,19 +14,19 @@ databaseChangeLog:
                     primaryKey: true
 
               - column:
-                  name: checkindate
+                  name: check_in_date
                   type: date
                   constraints:
                     nullable: false
 
               - column:
-                  name: checkoutdate
+                  name: check_out_date
                   type: date
                   constraints:
                     nullable: false
 
               - column:
-                  name: totalprice
+                  name: total_price
                   type: decimal(10, 2)
                   constraints:
                     nullable: true
@@ -38,27 +38,27 @@ databaseChangeLog:
                     nullable: true
 
               - column:
-                  name: clientid
+                  name: client_id
                   type: bigint
                   constraints:
                     nullable: false
 
               - column:
-                  name: roomid
+                  name: room_id
                   type: bigint
                   constraints:
                     nullable: false
 
         - addForeignKeyConstraint:
             baseTableName: reservation
-            baseColumnNames: clientid
+            baseColumnNames: client_id
             referencedTableName: client
             referencedColumnNames: id
             constraintName: fk_reservation_client
 
         - addForeignKeyConstraint:
             baseTableName: reservation
-            baseColumnNames: roomid
+            baseColumnNames: room_id
             referencedTableName: room
             referencedColumnNames: id
             constraintName: fk_reservation_room

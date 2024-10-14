@@ -42,7 +42,7 @@ public class RoomService {
 
     public RoomDTO updateRoom(Long id, RoomDTO roomDTO) {
         Room room = getRoomById(id);
-        room.setRoomnumber(roomDTO.getRoomnumber());
+        room.setRoomNumber(roomDTO.getRoomNumber());
         room.setPrice(roomDTO.getPrice());
         room.setAvailable(roomDTO.isAvailable());
         room.setType(roomDTO.getType());

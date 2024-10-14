@@ -32,9 +32,9 @@ public class ReservationService {
         Room room = getRoomById(reservationDTO.getRoomId());
 
         Reservation reservation = reservationMapper.toReservation(reservationDTO);
-        reservation.setClientid(client);
-        reservation.setRoomid(room);
-        reservation.setTotalprice(calculateTotalPrice(reservation));
+        reservation.setClientId(client);
+        reservation.setRoomId(room);
+        reservation.setTotalPrice(calculateTotalPrice(reservation));
 
         Reservation savedReservation = reservationRepository.save(reservation);
         return reservationMapper.toReservationDto(savedReservation);
@@ -73,12 +73,12 @@ public class ReservationService {
         Client client = getClientById(reservationDTO.getClientId());
         Room room = getRoomById(reservationDTO.getRoomId());
 
-        reservation.setClientid(client);
-        reservation.setRoomid(room);
-        reservation.setCheckindate(reservationDTO.getCheckInDate());
-        reservation.setCheckoutdate(reservationDTO.getCheckOutDate());
+        reservation.setClientId(client);
+        reservation.setRoomId(room);
+        reservation.setCheckInDate(reservationDTO.getCheckInDate());
+        reservation.setCheckOutDate(reservationDTO.getCheckOutDate());
         reservation.setStatus(reservationDTO.getStatus());
-        reservation.setTotalprice(calculateTotalPrice(reservation));
+        reservation.setTotalPrice(calculateTotalPrice(reservation));
 
         Reservation updatedReservation = reservationRepository.save(reservation);
         return reservationMapper.toReservationDto(updatedReservation);
@@ -90,12 +90,12 @@ public class ReservationService {
     }
 
     private long calculateDays(Reservation reservation) {
-        return ChronoUnit.DAYS.between(reservation.getCheckindate(), reservation.getCheckoutdate());
+        return ChronoUnit.DAYS.between(reservation.getCheckInDate(), reservation.getCheckOutDate());
     }
 
     private Double calculateTotalPrice(Reservation reservation) {
         long days = calculateDays(reservation);
-        Room room = roomRepository.findById(reservation.getRoomid().getId())
+        Room room = roomRepository.findById(reservation.getRoomId().getId())
                 .orElseThrow(() ->  new NoSuchRoomException("Room not found!"));
         return room.getPrice() * days;
     }

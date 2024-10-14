@@ -41,8 +41,8 @@ public class ClientService {
 
     public ClientDTO updateClient(Long id, ClientDTO clientDTO) {
         Client client = getClientById(id);
-        client.setFirstname(clientDTO.getFirstname());
-        client.setLastname(clientDTO.getLastname());
+        client.setFirstName(clientDTO.getFirstName());
+        client.setLastName(clientDTO.getLastName());
         client.setEmail(clientDTO.getEmail());
         client.setPhone(clientDTO.getPhone());
         return clientMapper.toClientDto(clientRepository.save(client));
