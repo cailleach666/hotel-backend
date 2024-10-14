@@ -16,7 +16,7 @@ public class RoomController {
 
     private final RoomService roomService;
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<RoomDTO> createRoom(@RequestBody RoomDTO roomDTO) {
         return ResponseEntity.ok(roomService.createRoom(roomDTO));
     }

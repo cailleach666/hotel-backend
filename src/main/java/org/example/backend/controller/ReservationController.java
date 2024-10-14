@@ -15,7 +15,7 @@ public class ReservationController {
 
     private final ReservationService reservationService;
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservationDTO) {
         return ResponseEntity.ok(reservationService.createReservation(reservationDTO));
     }
