@@ -48,5 +48,5 @@ deploy:
   script:
     - ssh -o StrictHostKeyChecking=no ubuntu@193.40.255.16 "
       cd /opt/hotel &&
-      docker-compose down &&
-        docker-compose up -d"
+      docker compose down &&
+        docker compose up -d"
