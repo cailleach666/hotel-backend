@@ -1,5 +1,6 @@
 package org.example.backend.exception;
 
+import org.example.backend.exception.exceptions.ClientEmailAlreadyExistsException;
 import org.example.backend.exception.exceptions.NoSuchClientException;
 import org.example.backend.exception.exceptions.NoSuchReservationException;
 import org.example.backend.exception.exceptions.NoSuchRoomException;
@@ -14,5 +15,11 @@ public class MyErrorHandler {
     public ResponseEntity<Object> handleException(Exception ex) {
         ex.printStackTrace();
         return new ResponseEntity<>(new ErrorResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ClientEmailAlreadyExistsException.class)
+    public ResponseEntity<Object> handleClientEmailAlreadyExists(ClientEmailAlreadyExistsException ex) {
+        ex.printStackTrace();
+        return new ResponseEntity<>(new ErrorResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }

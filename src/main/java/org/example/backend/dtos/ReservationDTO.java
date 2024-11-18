@@ -12,6 +12,7 @@ public class ReservationDTO {
     private Long id;
     private LocalDate checkInDate;
     private LocalDate checkOutDate;
+    private Long numberOfGuests;
     private Double totalPrice;
     private String status;
     private Long clientId;
