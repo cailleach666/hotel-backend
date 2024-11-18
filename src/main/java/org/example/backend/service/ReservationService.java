@@ -2,6 +2,8 @@ package org.example.backend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.backend.dtos.ReservationDTO;
+import org.example.backend.enums.RoomType;
+import org.example.backend.exception.exceptions.InvalidNumberOfGuestsException;
 import org.example.backend.exception.exceptions.NoSuchClientException;
 import org.example.backend.exception.exceptions.NoSuchReservationException;
 import org.example.backend.exception.exceptions.NoSuchRoomException;
@@ -30,6 +32,8 @@ public class ReservationService {
         Client client = getClientById(reservationDTO.getClientId());
 
         Room room = getRoomById(reservationDTO.getRoomId());
+
+        validateNumberOfGuests(room, reservationDTO.getNumberOfGuests());
 
         Reservation reservation = reservationMapper.toReservation(reservationDTO);
         reservation.setClientId(client);
@@ -73,10 +77,13 @@ public class ReservationService {
         Client client = getClientById(reservationDTO.getClientId());
         Room room = getRoomById(reservationDTO.getRoomId());
 
+        validateNumberOfGuests(room, reservationDTO.getNumberOfGuests());
+
         reservation.setClientId(client);
         reservation.setRoomId(room);
         reservation.setCheckInDate(reservationDTO.getCheckInDate());
         reservation.setCheckOutDate(reservationDTO.getCheckOutDate());
+        reservation.setNumberOfGuests(reservationDTO.getNumberOfGuests());
         reservation.setStatus(reservationDTO.getStatus());
         reservation.setTotalPrice(calculateTotalPrice(reservation));
 
@@ -100,5 +107,28 @@ public class ReservationService {
         return room.getPrice() * days;
     }
 
+    /**
+     * Helper method to validate the number of guests based on the room type.
+     * @param room the room to validate against
+     * @param numberOfGuests the number of guests to validate
+     */
+    private void validateNumberOfGuests(Room room, Long numberOfGuests) {
+        if (numberOfGuests < 1) {
+            throw new InvalidNumberOfGuestsException("There must be at least 1 guest.");
+        }
 
+        RoomType roomType = room.getType();
+
+        if (roomType == RoomType.SINGLE && numberOfGuests != 1) {
+            throw new InvalidNumberOfGuestsException("For a SINGLE room, only 1 guest is allowed.");
+        }
+
+        if (roomType == RoomType.DOUBLE && (numberOfGuests < 1 || numberOfGuests > 2)) {
+            throw new InvalidNumberOfGuestsException("For a DOUBLE room, the number of guests must be between 1 and 2.");
+        }
+
+        if (roomType == RoomType.DELUXE && (numberOfGuests < 1 || numberOfGuests > 5)) {
+            throw new InvalidNumberOfGuestsException("For a DELUXE room, the number of guests must be between 1 and 5.");
+        }
+    }
 }

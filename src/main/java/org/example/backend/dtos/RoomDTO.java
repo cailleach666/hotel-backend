@@ -13,5 +13,6 @@ public class RoomDTO {
     private Double price;
     private boolean available;
     private RoomType type;
+    private String description;
 
 }

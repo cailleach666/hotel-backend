@@ -2,6 +2,7 @@ package org.example.backend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.backend.dtos.ClientDTO;
+import org.example.backend.exception.exceptions.ClientEmailAlreadyExistsException;
 import org.example.backend.exception.exceptions.NoSuchClientException;
 import org.example.backend.mappers.ClientMapper;
 import org.example.backend.model.Client;
@@ -18,12 +19,21 @@ public class ClientService {
     private final ClientMapper clientMapper;
 
     public ClientDTO createClient(ClientDTO clientDTO) {
+        validateClientEmail(clientDTO.getEmail(), null);
         return clientMapper.toClientDto(clientRepository.save(clientMapper.toClient(clientDTO)));
     }
 
     public Client getClientById(Long id) {
         return clientRepository.findById(id)
                 .orElseThrow(() -> new NoSuchClientException("Client not found!"));
+    }
+
+    private void validateClientEmail(String email, Long clientId) {
+        if (clientRepository.existsByEmail(email)) {
+            if (clientId == null || (clientId != null && !clientRepository.findById(clientId).get().getEmail().equals(email))) {
+                throw new ClientEmailAlreadyExistsException("Account with email " + email + " already exists.");
+            }
+        }
     }
 
     public ClientDTO getClient(Long id) {
@@ -41,6 +51,8 @@ public class ClientService {
 
     public ClientDTO updateClient(Long id, ClientDTO clientDTO) {
         Client client = getClientById(id);
+        validateClientEmail(clientDTO.getEmail(), id);
+
         client.setFirstName(clientDTO.getFirstName());
         client.setLastName(clientDTO.getLastName());
         client.setEmail(clientDTO.getEmail());

@@ -26,6 +26,12 @@ databaseChangeLog:
                     nullable: false
 
               - column:
+                  name: number_of_guests
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
                   name: total_price
                   type: decimal(10, 2)
                   constraints:
