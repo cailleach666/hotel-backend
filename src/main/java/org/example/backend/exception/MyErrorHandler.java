@@ -1,9 +1,6 @@
 package org.example.backend.exception;
 
-import org.example.backend.exception.exceptions.ClientEmailAlreadyExistsException;
-import org.example.backend.exception.exceptions.NoSuchClientException;
-import org.example.backend.exception.exceptions.NoSuchReservationException;
-import org.example.backend.exception.exceptions.NoSuchRoomException;
+import org.example.backend.exception.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,6 +16,12 @@ public class MyErrorHandler {
 
     @ExceptionHandler(ClientEmailAlreadyExistsException.class)
     public ResponseEntity<Object> handleClientEmailAlreadyExists(ClientEmailAlreadyExistsException ex) {
+        ex.printStackTrace();
+        return new ResponseEntity<>(new ErrorResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RoomNumberAlreadyExistsException.class)
+    public ResponseEntity<Object> handleRoomNumberAlreadyExists(RoomNumberAlreadyExistsException ex) {
         ex.printStackTrace();
         return new ResponseEntity<>(new ErrorResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
