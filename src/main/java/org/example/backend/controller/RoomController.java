@@ -1,9 +1,15 @@
 package org.example.backend.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.backend.criteria.RoomSearchCriteria;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import org.example.backend.dtos.RoomDTO;
 import org.example.backend.service.RoomService;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,5 +47,13 @@ public class RoomController {
     public ResponseEntity<Void> deleteRoom(@PathVariable Long id) {
         roomService.deleteRoom(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<RoomDTO>> getRooms(
+            @ModelAttribute RoomSearchCriteria criteria,
+            @PageableDefault(sort = "price")Pageable pageable) {
+        Page<RoomDTO> rooms = roomService.getRooms(criteria, pageable);
+        return ResponseEntity.ok(rooms);
     }
 }
