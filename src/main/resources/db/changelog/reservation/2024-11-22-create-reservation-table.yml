@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2024-10-14-create-reservation-table
+      author: yara
+      changes:
+      - addColumn:
+          tableName: room
+          columns:
+            - column:
+                name: number_of_guests
+                type: bigint
+                constraints:
+                  nullable: false
+
+  - changeSet:
+      id: 2024-10-14-create-reservation-table-2
+      author: yara
+      changes:
+      - dropColumn:
+          tableName: room
+          columnName: number_of_guests

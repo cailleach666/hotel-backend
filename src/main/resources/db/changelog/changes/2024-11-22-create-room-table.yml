@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2024-11-18-create-room-table
+      author: yara
+      changes:
+        - addUniqueConstraint:
+            tableName: room
+            columnNames: room_number
+            constraintName: uq_room_room_number
