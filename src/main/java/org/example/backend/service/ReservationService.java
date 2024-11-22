@@ -127,6 +127,10 @@ public class ReservationService {
             throw new InvalidNumberOfGuestsException("For a DOUBLE room, the number of guests must be between 1 and 2.");
         }
 
+        if (roomType == RoomType.TWIN && (numberOfGuests < 1 || numberOfGuests > 2)) {
+            throw new InvalidNumberOfGuestsException("For a TWIN room, the number of guests must be between 1 and 2.");
+        }
+
         if (roomType == RoomType.DELUXE && (numberOfGuests < 1 || numberOfGuests > 5)) {
             throw new InvalidNumberOfGuestsException("For a DELUXE room, the number of guests must be between 1 and 5.");
         }
