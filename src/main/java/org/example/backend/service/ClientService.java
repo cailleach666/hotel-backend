@@ -7,6 +7,7 @@ import org.example.backend.exception.exceptions.NoSuchClientException;
 import org.example.backend.mappers.ClientMapper;
 import org.example.backend.model.Client;
 import org.example.backend.repository.ClientRepository;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,10 +18,17 @@ public class ClientService {
 
     private final ClientRepository clientRepository;
     private final ClientMapper clientMapper;
+//    private final BCryptPasswordEncoder passwordEncoder;
 
     public ClientDTO createClient(ClientDTO clientDTO) {
         validateClientEmail(clientDTO.getEmail(), null);
-        return clientMapper.toClientDto(clientRepository.save(clientMapper.toClient(clientDTO)));
+        Client client = clientMapper.toClient(clientDTO);
+//        client.setPassword(passwordEncoder.encode(client.getPassword()));
+        return clientMapper.toClientDto(clientRepository.save(client));
+    }
+
+    public ClientDTO getClientByEmail(String email) {
+        return clientMapper.toClientDto(clientRepository.findByEmail(email)); // Assuming your repository has this method
     }
 
     public Client getClientById(Long id) {

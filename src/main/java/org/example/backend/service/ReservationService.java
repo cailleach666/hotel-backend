@@ -16,6 +16,7 @@ import org.example.backend.repository.ReservationRepository;
 import org.example.backend.repository.RoomRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -35,6 +36,8 @@ public class ReservationService {
 
         validateNumberOfGuests(room, reservationDTO.getNumberOfGuests());
 
+        validateReservationDates(reservationDTO.getCheckInDate(), reservationDTO.getCheckOutDate());
+
         Reservation reservation = reservationMapper.toReservation(reservationDTO);
         reservation.setClientId(client);
         reservation.setRoomId(room);
@@ -42,6 +45,16 @@ public class ReservationService {
 
         Reservation savedReservation = reservationRepository.save(reservation);
         return reservationMapper.toReservationDto(savedReservation);
+    }
+
+    private void validateReservationDates(LocalDate checkInDate, LocalDate checkOutDate) {
+        if (checkInDate == null || checkOutDate == null) {
+            throw new IllegalArgumentException("Check-in date and check-out date must not be null.");
+        }
+
+        if (!checkInDate.isBefore(checkOutDate)) {
+            throw new IllegalArgumentException("Check-in date must be before the check-out date.");
+        }
     }
 
     public Reservation getReservationById(Long id) {
