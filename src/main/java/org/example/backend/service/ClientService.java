@@ -28,7 +28,7 @@ public class ClientService {
     }
 
     public ClientDTO getClientByEmail(String email) {
-        return clientMapper.toClientDto(clientRepository.findByEmail(email)); // Assuming your repository has this method
+        return clientMapper.toClientDto(clientRepository.findByEmail(email));
     }
 
     public Client getClientById(Long id) {

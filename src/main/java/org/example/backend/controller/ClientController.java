@@ -2,6 +2,7 @@ package org.example.backend.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.backend.dtos.ClientDTO;
+import org.example.backend.exception.exceptions.NoSuchClientException;
 import org.example.backend.model.Client;
 import org.example.backend.service.ClientService;
 import org.springframework.http.ResponseEntity;
@@ -24,17 +25,13 @@ public class ClientController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody ClientDTO clientToCheck) {
+    public ResponseEntity<ClientDTO> login(@RequestBody ClientDTO clientToCheck) {
         ClientDTO client = clientService.getClientByEmail(clientToCheck.getEmail());
 
         if (client != null && client.getPassword().equals(clientToCheck.getPassword())) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Login successful");
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(client);
         } else {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Invalid email or password");
-            return ResponseEntity.status(401).body(errorResponse);
+            throw new NoSuchClientException("Incorrect email or password");
         }
     }
 
