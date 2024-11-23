@@ -47,6 +47,12 @@ public class ReservationService {
         return reservationMapper.toReservationDto(savedReservation);
     }
 
+    public List<ReservationDTO> getReservationsByClientId(Long clientId) {
+        Client client = getClientById(clientId); // Reuse existing method to get the client by ID
+        List<Reservation> reservations = reservationRepository.findByClientId(client); // You need to implement this query in the repository
+        return reservationMapper.toReservationDTOList(reservations); // Map to DTO list
+    }
+
     private void validateReservationDates(LocalDate checkInDate, LocalDate checkOutDate) {
         if (checkInDate == null || checkOutDate == null) {
             throw new IllegalArgumentException("Check-in date and check-out date must not be null.");
