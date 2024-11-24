@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.backend.dtos.ClientDTO;
 import org.example.backend.model.Client;
 import org.example.backend.service.ClientService;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/clients")
@@ -27,8 +29,11 @@ public class ClientController {
     @Operation(summary = "Create a new client", description = "Create a new client and return the client details")
     @ApiResponse(responseCode = "200", description = "Client created successfully")
     @ApiResponse(responseCode = "400", description = "Invalid client data")
-    public ResponseEntity<ClientDTO> createClient(@RequestBody @Parameter(description = "Client details") ClientDTO clientDTO) {
-        return ResponseEntity.ok(clientService.createClient(clientDTO));
+    public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO clientDTO) {
+        log.info("Received request to create client: {}", clientDTO);
+        ClientDTO createdClient = clientService.createClient(clientDTO);
+        log.info("Client created successfully: {}", createdClient);
+        return ResponseEntity.ok(createdClient);
     }
 
     @PostMapping("/login")
@@ -36,13 +41,16 @@ public class ClientController {
     @ApiResponse(responseCode = "200", description = "Login successful")
     @ApiResponse(responseCode = "401", description = "Invalid email or password")
     public ResponseEntity<Map<String, String>> login(@RequestBody @Parameter(description = "Client credentials") ClientDTO clientToCheck) {
+        log.info("Login attempt for email: {}", clientToCheck.getEmail());
         ClientDTO client = clientService.getClientByEmail(clientToCheck.getEmail());
 
         if (client != null && client.getPassword().equals(clientToCheck.getPassword())) {
+            log.info("Login successful for email: {}", clientToCheck.getEmail());
             Map<String, String> response = new HashMap<>();
             response.put("message", "Login successful");
             return ResponseEntity.ok(response);
         } else {
+            log.warn("Invalid login attempt for email: {}", clientToCheck.getEmail());
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("message", "Invalid email or password");
             return ResponseEntity.status(401).body(errorResponse);
@@ -53,17 +61,26 @@ public class ClientController {
     @Operation(summary = "Get list of clients", description = "Retrieve a list of all clients")
     @ApiResponse(responseCode = "200", description = "List of clients")
     public ResponseEntity<List<ClientDTO>> getClients() {
+        log.info("Fetching all clients");
         List<ClientDTO> clients = clientService.getAllClientsDTO();
+        log.info("Found {} clients", clients.size());
         return ResponseEntity.ok(clients);
     }
 
     @GetMapping("/{id}")
+
     @Operation(summary = "Get a client by ID", description = "Retrieve a client by their unique ID")
     @ApiResponse(responseCode = "200", description = "Client found")
     @ApiResponse(responseCode = "404", description = "Client not found")
     public ResponseEntity<ClientDTO> getClient(@PathVariable @Parameter(description = "Client ID") Long id) {
-        return ResponseEntity.ok(clientService.getClient(id));
-    }
+        log.info("Fetching client with ID: {}", id);
+        ClientDTO client = clientService.getClient(id);
+        if (client != null) {
+            log.info("Client found: {}", client);
+        } else {
+            log.warn("Client with ID {} not found", id);
+        }
+        return ResponseEntity.ok(client);    }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update client details", description = "Update the details of a specific client")
@@ -72,15 +89,19 @@ public class ClientController {
     @ApiResponse(responseCode = "404", description = "Client not found")
     public ResponseEntity<ClientDTO> updateClient(@PathVariable @Parameter(description = "Client ID") Long id,
                                                   @RequestBody @Parameter(description = "Updated client details") ClientDTO updatedClientDTO) {
-        return ResponseEntity.ok(clientService.updateClient(id, updatedClientDTO));
-    }
+        log.info("Updating client with ID: {}. New data: {}", id, updatedClientDTO);
+        ClientDTO updatedClient = clientService.updateClient(id, updatedClientDTO);
+        log.info("Client updated successfully: {}", updatedClient);
+        return ResponseEntity.ok(updatedClient);    }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a client", description = "Delete a client by their unique ID")
     @ApiResponse(responseCode = "204", description = "Client deleted successfully")
     @ApiResponse(responseCode = "404", description = "Client not found")
     public ResponseEntity<Void> deleteClient(@PathVariable @Parameter(description = "Client ID") Long id) {
+        log.info("Deleting client with ID: {}", id);
         clientService.deleteClient(id);
+        log.info("Client with ID {} deleted successfully", id);
         return ResponseEntity.noContent().build();
     }
 }
