@@ -38,7 +38,7 @@ public class ClientService {
 
     private void validateClientEmail(String email, Long clientId) {
         if (clientRepository.existsByEmail(email)) {
-            if (clientId == null || (clientId != null && !clientRepository.findById(clientId).get().getEmail().equals(email))) {
+            if (clientId == null || !clientRepository.findById(clientId).get().getEmail().equals(email)) {
                 throw new ClientEmailAlreadyExistsException("Account with email " + email + " already exists.");
             }
         }
