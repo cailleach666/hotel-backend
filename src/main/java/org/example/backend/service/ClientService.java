@@ -1,6 +1,7 @@
 package org.example.backend.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.backend.dtos.ClientDTO;
 import org.example.backend.exception.exceptions.ClientEmailAlreadyExistsException;
 import org.example.backend.exception.exceptions.NoSuchClientException;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ClientService {
@@ -21,10 +23,15 @@ public class ClientService {
 //    private final BCryptPasswordEncoder passwordEncoder;
 
     public ClientDTO createClient(ClientDTO clientDTO) {
+        log.info("Creating a new client with email: {}", clientDTO.getEmail());
+
         validateClientEmail(clientDTO.getEmail(), null);
         Client client = clientMapper.toClient(clientDTO);
 //        client.setPassword(passwordEncoder.encode(client.getPassword()));
-        return clientMapper.toClientDto(clientRepository.save(client));
+
+        Client savedClient = clientRepository.save(client);
+        log.info("Client with email: {} created successfully", clientDTO.getEmail());
+        return clientMapper.toClientDto(savedClient);
     }
 
     public ClientDTO getClientByEmail(String email) {
@@ -32,6 +39,7 @@ public class ClientService {
     }
 
     public Client getClientById(Long id) {
+        log.info("Fetching client by id: {}", id);
         return clientRepository.findById(id)
                 .orElseThrow(() -> new NoSuchClientException("Client not found!"));
     }
@@ -58,6 +66,8 @@ public class ClientService {
     }
 
     public ClientDTO updateClient(Long id, ClientDTO clientDTO) {
+        log.info("Updating client with id: {}", id);
+
         Client client = getClientById(id);
         validateClientEmail(clientDTO.getEmail(), id);
 
@@ -65,11 +75,15 @@ public class ClientService {
         client.setLastName(clientDTO.getLastName());
         client.setEmail(clientDTO.getEmail());
         client.setPhone(clientDTO.getPhone());
-        return clientMapper.toClientDto(clientRepository.save(client));
+        Client updatedClient = clientRepository.save(client);
+        log.info("Client with id: {} updated successfully", id);
+        return clientMapper.toClientDto(updatedClient);
     }
 
     public void deleteClient(Long id) {
+        log.info("Deleting client with id: {}", id);
         Client client = getClientById(id);
         clientRepository.delete(client);
+        log.info("Client with id: {} deleted successfully", id);
     }
 }
