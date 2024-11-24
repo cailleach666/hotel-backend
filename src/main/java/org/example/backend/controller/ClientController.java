@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.dtos.ClientDTO;
+import org.example.backend.exception.exceptions.NoSuchClientException;
 import org.example.backend.model.Client;
 import org.example.backend.service.ClientService;
 import org.springframework.http.ResponseEntity;
@@ -37,23 +38,13 @@ public class ClientController {
     }
 
     @PostMapping("/login")
-    @Operation(summary = "Client login", description = "Authenticate a client by email and password")
-    @ApiResponse(responseCode = "200", description = "Login successful")
-    @ApiResponse(responseCode = "401", description = "Invalid email or password")
-    public ResponseEntity<Map<String, String>> login(@RequestBody @Parameter(description = "Client credentials") ClientDTO clientToCheck) {
-        log.info("Login attempt for email: {}", clientToCheck.getEmail());
+    public ResponseEntity<ClientDTO> login(@RequestBody ClientDTO clientToCheck) {
         ClientDTO client = clientService.getClientByEmail(clientToCheck.getEmail());
 
         if (client != null && client.getPassword().equals(clientToCheck.getPassword())) {
-            log.info("Login successful for email: {}", clientToCheck.getEmail());
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Login successful");
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(client);
         } else {
-            log.warn("Invalid login attempt for email: {}", clientToCheck.getEmail());
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("message", "Invalid email or password");
-            return ResponseEntity.status(401).body(errorResponse);
+            throw new NoSuchClientException("Incorrect email or password");
         }
     }
 
