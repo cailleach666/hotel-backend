@@ -19,7 +19,10 @@ public class BackendApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
-						.allowedOrigins("http://localhost:4200")
+						.allowedOrigins("http://localhost:4200",
+								"http://havenlystay.sytes.net",
+								"http://193.40.255.16",
+								"http://frontend:80")
 						.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
 						.allowedHeaders("*");
 			}
