@@ -1,8 +1,13 @@
 package org.example.backend.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.dtos.ClientDTO;
+import org.example.backend.model.Client;
 import org.example.backend.service.ClientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +20,15 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/clients")
+@Tag(name = "Client", description = "Operations related to clients")
 public class ClientController {
 
     private final ClientService clientService;
 
     @PostMapping
+    @Operation(summary = "Create a new client", description = "Create a new client and return the client details")
+    @ApiResponse(responseCode = "200", description = "Client created successfully")
+    @ApiResponse(responseCode = "400", description = "Invalid client data")
     public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO clientDTO) {
         log.info("Received request to create client: {}", clientDTO);
         ClientDTO createdClient = clientService.createClient(clientDTO);
@@ -28,9 +37,11 @@ public class ClientController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody ClientDTO clientToCheck) {
+    @Operation(summary = "Client login", description = "Authenticate a client by email and password")
+    @ApiResponse(responseCode = "200", description = "Login successful")
+    @ApiResponse(responseCode = "401", description = "Invalid email or password")
+    public ResponseEntity<Map<String, String>> login(@RequestBody @Parameter(description = "Client credentials") ClientDTO clientToCheck) {
         log.info("Login attempt for email: {}", clientToCheck.getEmail());
-
         ClientDTO client = clientService.getClientByEmail(clientToCheck.getEmail());
 
         if (client != null && client.getPassword().equals(clientToCheck.getPassword())) {
@@ -47,6 +58,8 @@ public class ClientController {
     }
 
     @GetMapping
+    @Operation(summary = "Get list of clients", description = "Retrieve a list of all clients")
+    @ApiResponse(responseCode = "200", description = "List of clients")
     public ResponseEntity<List<ClientDTO>> getClients() {
         log.info("Fetching all clients");
         List<ClientDTO> clients = clientService.getAllClientsDTO();
@@ -55,7 +68,11 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClientDTO> getClient(@PathVariable Long id) {
+
+    @Operation(summary = "Get a client by ID", description = "Retrieve a client by their unique ID")
+    @ApiResponse(responseCode = "200", description = "Client found")
+    @ApiResponse(responseCode = "404", description = "Client not found")
+    public ResponseEntity<ClientDTO> getClient(@PathVariable @Parameter(description = "Client ID") Long id) {
         log.info("Fetching client with ID: {}", id);
         ClientDTO client = clientService.getClient(id);
         if (client != null) {
@@ -63,19 +80,25 @@ public class ClientController {
         } else {
             log.warn("Client with ID {} not found", id);
         }
-        return ResponseEntity.ok(client);
-    }
+        return ResponseEntity.ok(client);    }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClientDTO> updateClient(@PathVariable Long id, @RequestBody ClientDTO updatedClientDTO) {
+    @Operation(summary = "Update client details", description = "Update the details of a specific client")
+    @ApiResponse(responseCode = "200", description = "Client updated successfully")
+    @ApiResponse(responseCode = "400", description = "Invalid client data")
+    @ApiResponse(responseCode = "404", description = "Client not found")
+    public ResponseEntity<ClientDTO> updateClient(@PathVariable @Parameter(description = "Client ID") Long id,
+                                                  @RequestBody @Parameter(description = "Updated client details") ClientDTO updatedClientDTO) {
         log.info("Updating client with ID: {}. New data: {}", id, updatedClientDTO);
         ClientDTO updatedClient = clientService.updateClient(id, updatedClientDTO);
         log.info("Client updated successfully: {}", updatedClient);
-        return ResponseEntity.ok(updatedClient);
-    }
+        return ResponseEntity.ok(updatedClient);    }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
+    @Operation(summary = "Delete a client", description = "Delete a client by their unique ID")
+    @ApiResponse(responseCode = "204", description = "Client deleted successfully")
+    @ApiResponse(responseCode = "404", description = "Client not found")
+    public ResponseEntity<Void> deleteClient(@PathVariable @Parameter(description = "Client ID") Long id) {
         log.info("Deleting client with ID: {}", id);
         clientService.deleteClient(id);
         log.info("Client with ID {} deleted successfully", id);
