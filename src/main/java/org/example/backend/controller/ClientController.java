@@ -7,15 +7,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.dtos.ClientDTO;
-import org.example.backend.exception.exceptions.NoSuchClientException;
-import org.example.backend.model.Client;
 import org.example.backend.service.ClientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -37,17 +33,6 @@ public class ClientController {
         return ResponseEntity.ok(createdClient);
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<ClientDTO> login(@RequestBody ClientDTO clientToCheck) {
-        ClientDTO client = clientService.getClientByEmail(clientToCheck.getEmail());
-
-        if (client != null && client.getPassword().equals(clientToCheck.getPassword())) {
-            return ResponseEntity.ok(client);
-        } else {
-            throw new NoSuchClientException("Incorrect email or password");
-        }
-    }
-
     @GetMapping
     @Operation(summary = "Get list of clients", description = "Retrieve a list of all clients")
     @ApiResponse(responseCode = "200", description = "List of clients")
@@ -59,7 +44,6 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-
     @Operation(summary = "Get a client by ID", description = "Retrieve a client by their unique ID")
     @ApiResponse(responseCode = "200", description = "Client found")
     @ApiResponse(responseCode = "404", description = "Client not found")

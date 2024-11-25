@@ -45,4 +45,17 @@ public class MyErrorHandler {
         logException(ex);
         return new ResponseEntity<>(new ErrorResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(InvalidEmailOrPasswordException.class)
+    public ResponseEntity<Object> handleInvalidEmailOrPassword(InvalidEmailOrPasswordException ex) {
+        ex.printStackTrace();
+        logException(ex);
+        return new ResponseEntity<>(new ErrorResponse(ex.getMessage()), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleApplicationException(AuthenticationException e) {
+        return new ResponseEntity<>(
+                new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
 }

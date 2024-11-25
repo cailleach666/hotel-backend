@@ -23,6 +23,4 @@ public class ClientDTO {
     @Schema(description = "The client's phone number", example = "+1234567890")
     private String phone;
 
-    @Schema(description = "The client's password", example = "password123")
-    private String password;
 }
