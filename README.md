@@ -19,6 +19,7 @@ The application allows users to search for available rooms and make bookings thr
 3. Build and run the application using Gradle:  
     ```./gradlew bootRun```
 ## Building the Application
+Before building, run in docker compose file service postgres.
 
 To build the project, use the following Gradle command:  
 
