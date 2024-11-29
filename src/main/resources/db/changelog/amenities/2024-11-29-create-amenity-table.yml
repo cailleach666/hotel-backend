@@ -1,0 +1,73 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2024-11-29-create-amenity-table
+      author: yara
+      changes:
+        - createTable:
+            tableName: amenity
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+
+              - column:
+                  name: name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: description
+                  type: varchar255)
+                  constraints:
+                    nullable: true
+
+              - column:
+                  name: additional_cost
+                  type: decimal(10, 2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: amenities
+                  type: array
+                  constraints:
+                    nullable: true
+
+
+  - changeSet:
+      id: 2024-11-29-create-room-amenities-table
+      author: yara
+      changes:
+        - createTable:
+            tableName: room_amenities
+            columns:
+              - column:
+                  name: room_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: amenity_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseTableName: room_amenities
+            baseColumnNames: room_id
+            referencedTableName: room
+            referencedColumnNames: id
+            constraintName: fk_room_amenities_room
+
+        - addForeignKeyConstraint:
+            baseTableName: room_amenities
+            baseColumnNames: amenity_id
+            referencedTableName: amenity
+            referencedColumnNames: id
+            constraintName: fk_room_amenities_amenity

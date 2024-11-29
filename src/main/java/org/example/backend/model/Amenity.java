@@ -15,12 +15,12 @@ public class Amenity {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String description;
 
     @Column(name = "additional_cost", nullable = false)
     private double additionalCost;
 
-    @ManyToMany(mappedBy = "amenities")
+    @ManyToMany(mappedBy = "room_amenities")
     private List<Room> rooms;
 }
