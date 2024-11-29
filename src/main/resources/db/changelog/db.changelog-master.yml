@@ -4,3 +4,9 @@ databaseChangeLog:
 
   - includeAll:
       path: "db/changelog/reservation/"
+
+  - includeAll:
+      path: "db/changelog/amenities/"
+
+  - includeAll:
+      path: "db/changelog/reviews/"

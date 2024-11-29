@@ -3,6 +3,7 @@ package org.example.backend.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.example.backend.enums.RoomType;
+import java.util.List;
 
 @Entity
 @Data
@@ -25,4 +26,12 @@ public class Room {
     private RoomType type;
 
     private String description;
+
+    @ManyToMany
+    @JoinTable(
+            name = "room_amenities",
+            joinColumns = @JoinColumn(name = "room_id"),
+            inverseJoinColumns = @JoinColumn(name = "amenity_id")
+    )
+    private List<Amenity> amenities;
 }
