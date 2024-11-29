@@ -1,9 +1,14 @@
 package org.example.backend.configs;
 
+import org.example.backend.service.ClientDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -17,6 +22,13 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
+
+
+    @Autowired
+    private JwtRequestFilter jwtRequestFilter;
+
+
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -29,6 +41,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/clients").permitAll()
                         .requestMatchers("/clients/**").permitAll()
+                        .requestMatchers("/rooms/private", "/rooms/private/**").hasRole("ADMIN")
                         .requestMatchers("/rooms/**").permitAll()
                         .requestMatchers("/reservations/**").permitAll()
                         .requestMatchers("/reservations/client/**").permitAll()
@@ -38,7 +51,7 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowedOrigins(List.of("http://localhost:4200",
