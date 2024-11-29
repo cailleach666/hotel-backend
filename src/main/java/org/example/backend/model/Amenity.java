@@ -21,6 +21,6 @@ public class Amenity {
     @Column(name = "additional_cost", nullable = false)
     private double additionalCost;
 
-    @ManyToMany(mappedBy = "room_amenities")
+    @ManyToMany(mappedBy = "amenities")
     private List<Room> rooms;
 }

@@ -12,8 +12,6 @@ import java.util.List;
 public interface ReviewMapper {
 
     @Mapping(source = "clientId.id", target = "clientId")
-    @Mapping(source = "clientId.firstName", target = "clientFirstName")
-    @Mapping(source = "clientId.lastName", target = "clientLastName")
     @Mapping(source = "reservationId.id", target = "reservationId")
     @Mapping(source = "createdAt", target = "createdAt")
     ReviewDTO toReviewDTO(Review review);

@@ -22,7 +22,7 @@ databaseChangeLog:
 
               - column:
                   name: description
-                  type: varchar255)
+                  type: varchar(255)
                   constraints:
                     nullable: true
 
@@ -31,12 +31,6 @@ databaseChangeLog:
                   type: decimal(10, 2)
                   constraints:
                     nullable: false
-
-              - column:
-                  name: amenities
-                  type: array
-                  constraints:
-                    nullable: true
 
 
   - changeSet:
