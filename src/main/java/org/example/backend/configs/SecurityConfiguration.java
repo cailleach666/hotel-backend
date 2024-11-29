@@ -39,13 +39,14 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/v3/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/clients").permitAll()
                         .requestMatchers("/clients/**").permitAll()
                         .requestMatchers("/rooms/private", "/rooms/private/**").hasRole("ADMIN")
                         .requestMatchers("/rooms/**").permitAll()
                         .requestMatchers("/reservations/**").permitAll()
                         .requestMatchers("/reservations/client/**").permitAll()
-                        .requestMatchers("/swagger-ui/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
