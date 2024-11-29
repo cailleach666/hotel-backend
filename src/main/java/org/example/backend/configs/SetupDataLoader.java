@@ -1,16 +1,13 @@
 package org.example.backend.configs;
 
 import jakarta.transaction.Transactional;
-import org.example.backend.model.Client;
+import lombok.RequiredArgsConstructor;
 import org.example.backend.model.Privilege;
 import org.example.backend.model.Role;
-import org.example.backend.repository.ClientRepository;
 import org.example.backend.repository.PrivilegeRepository;
 import org.example.backend.repository.RoleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -18,20 +15,13 @@ import java.util.Collection;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
     boolean alreadySetup = false;
 
-    @Autowired
-    private ClientRepository clientRepository;
+    private final RoleRepository roleRepository;
 
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private PrivilegeRepository privilegeRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PrivilegeRepository privilegeRepository;
 
     @Override
     @Transactional
@@ -47,7 +37,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         List<Privilege> adminPrivileges = Arrays.asList(
                 readPrivilege, writePrivilege);
         createRoleIfNotFound("ROLE_ADMIN", adminPrivileges);
-        createRoleIfNotFound("ROLE_USER", Arrays.asList(readPrivilege));
+        createRoleIfNotFound("ROLE_USER", List.of(readPrivilege));
 
         alreadySetup = true;
     }

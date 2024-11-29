@@ -13,7 +13,6 @@ import org.example.backend.repository.RoomRepository;
 
 import org.example.backend.specifications.RoomSpecifications;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -46,11 +45,10 @@ public class RoomService {
 
     private void validateRoomNumber(String roomNumber, Long roomId) {
         log.info("Validating room number: {}", roomNumber);
-        if (roomRepository.existsByRoomNumber(roomNumber)) {
-            if (roomId == null || (roomId != null && !roomRepository.findById(roomId).get().getRoomNumber().equals(roomNumber))) {
+        if (roomRepository.existsByRoomNumber(roomNumber) && (roomId == null || (roomId != null && !roomRepository.findById(roomId).get().getRoomNumber().equals(roomNumber)))) {
                 throw new RoomNumberAlreadyExistsException("Room with number " + roomNumber + " already exists.");
             }
-        }
+
     }
 
     public RoomDTO getRoom(Long id) {

@@ -1,11 +1,8 @@
 package org.example.backend.configs;
 
-import org.example.backend.service.ClientDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.Data;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -20,14 +17,10 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@Data
 public class SecurityConfiguration {
 
-
-
-    @Autowired
     private JwtRequestFilter jwtRequestFilter;
-
-
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {

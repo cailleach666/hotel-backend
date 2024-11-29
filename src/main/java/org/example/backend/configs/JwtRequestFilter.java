@@ -9,21 +9,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.example.backend.service.ClientDetailsService;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -62,13 +58,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     private Optional<String> getToken(HttpServletRequest request) {
         String header = request.getHeader("Authorization");
+        String headerPrefix = "Bearer ";
         log.info("Authorization header: {}", header);
-        if (header == null || !header.startsWith("Bearer ")) {
+        if (header == null || !header.startsWith(headerPrefix)) {
             log.warn("No Bearer token found in request.");
             return Optional.empty();
         }
-        log.info("Token found in request: {}", header.substring("Bearer ".length()));
-        return Optional.of(header.substring("Bearer ".length()));
+        log.info("Token found in request: {}", header.substring(headerPrefix.length()));
+        return Optional.of(header.substring(headerPrefix.length()));
     }
 
     private Claims parseToken(String token) {
@@ -83,7 +80,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         List<String> roles = (List<String>) claims.get("roles");
 
         List<SimpleGrantedAuthority> authorities = roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role))
+                .map(SimpleGrantedAuthority::new)
                 .toList();
 
         return new UsernamePasswordAuthenticationToken(claims.getSubject(), null, authorities);

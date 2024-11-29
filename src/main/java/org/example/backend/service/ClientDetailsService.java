@@ -1,39 +1,42 @@
 package org.example.backend.service;
 
 import jakarta.transaction.Transactional;
+import lombok.Data;
 import org.example.backend.model.Client;
 import org.example.backend.model.Privilege;
 import org.example.backend.model.Role;
 import org.example.backend.repository.ClientRepository;
 import org.example.backend.repository.RoleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 @Service("clientDetailsService")
 @Transactional
+@Data
 public class ClientDetailsService implements UserDetailsService {
-    @Autowired
     private ClientRepository clientRepository;
 
-    @Autowired
     private ClientService service;
 
-    @Autowired
     private MessageSource messages;
 
-    @Autowired
     private RoleRepository roleRepository;
+
+    @Value("${user.default.password}")
+    private String defaultPassword;
+
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String email)
@@ -41,9 +44,10 @@ public class ClientDetailsService implements UserDetailsService {
 
         Client client = clientRepository.findByEmail(email);
         if (client == null) {
+            String encodedPassword = passwordEncoder.encode(defaultPassword);
             return new org.springframework.security.core.userdetails.User(
-                    " ", " ", true, true, true, true,
-                    getAuthorities(Arrays.asList(
+                    " ", encodedPassword, true, true, true, true,
+                    getAuthorities(List.of(
                             roleRepository.findByName("ROLE_USER"))));
         }
 

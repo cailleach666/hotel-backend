@@ -42,11 +42,14 @@ public class ClientService {
     }
 
     private void validateClientEmail(String email, Long clientId) {
-        if (clientRepository.existsByEmail(email)) {
-            if (clientId == null || !clientRepository.findById(clientId).get().getEmail().equals(email)) {
+
+        if (clientRepository.existsByEmail(email)
+                && (clientId == null || !clientRepository.findById(clientId)
+                .orElseThrow(() -> new ClientEmailAlreadyExistsException("Invalid client ID"))
+                .getEmail().equals(email))) {
                 throw new ClientEmailAlreadyExistsException("Account with email " + email + " already exists.");
             }
-        }
+
     }
 
     public ClientDTO getClient(Long id) {

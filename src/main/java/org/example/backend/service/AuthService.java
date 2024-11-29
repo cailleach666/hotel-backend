@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -32,7 +31,7 @@ public class AuthService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final ClientMapper clientMapper;
-    private final long TOKEN_VALIDITY = 1000 * 60 * 60 * 24 * 10;
+    private static final long TOKEN_VALIDITY = (long) 1000 * 60 * 60 * 24 * 10;
 
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
         Client client = clientRepository.findByEmail(loginRequestDTO.getEmail());
@@ -42,8 +41,7 @@ public class AuthService {
             claims.put("id", client.getId());
             claims.put("email", client.getEmail());
             claims.put("roles", client.getRoles().stream()
-                    .map(Role::getName)
-                    .collect(Collectors.toList()));
+                    .map(Role::getName).toList());
             String token = getToken(claims);
 
             LoginResponseDTO responseDTO = new LoginResponseDTO();
@@ -78,7 +76,7 @@ public class AuthService {
         }
         newClient.setRoles(List.of(role));
 
-        log.info("New client with roles: {}", newClient.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
+        log.info("New client with roles: {}", newClient.getRoles().stream().map(Role::getName).toList());
 
         Client savedClient = clientRepository.save(newClient);
 
