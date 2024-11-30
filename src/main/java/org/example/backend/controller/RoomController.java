@@ -28,7 +28,7 @@ public class RoomController {
 
     private final RoomService roomService;
 
-    @PostMapping
+    @PostMapping("/private")
     @Operation(summary = "Create a new room", description = "Create a new room and return the room details")
     @ApiResponse(responseCode = "200", description = "Room created successfully")
     @ApiResponse(responseCode = "400", description = "Invalid room data")
@@ -63,7 +63,7 @@ public class RoomController {
         }
         return ResponseEntity.ok(room);    }
 
-    @PutMapping("/{id}")
+    @PutMapping("/private/{id}")
     @Operation(summary = "Update room details", description = "Update the details of a specific room")
     @ApiResponse(responseCode = "200", description = "Room updated successfully")
     @ApiResponse(responseCode = "400", description = "Invalid room data")
@@ -76,7 +76,7 @@ public class RoomController {
         log.info("Room updated successfully: {}", updatedRoom);
         return ResponseEntity.ok(updatedRoom);    }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/private/{id}")
     @Operation(summary = "Delete room", description = "Delete a room by its unique ID")
     @ApiResponse(responseCode = "204", description = "Room deleted successfully")
     @ApiResponse(responseCode = "404", description = "Room not found")

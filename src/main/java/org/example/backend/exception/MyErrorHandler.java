@@ -10,15 +10,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 @ControllerAdvice
 public class MyErrorHandler {
-    @ExceptionHandler({NoSuchClientException.class,
-            NoSuchRoomException.class,
-            NoSuchReservationException.class
-            })
 
     private void logException(Exception ex) {
         log.error("Exception occurred: {}", ex.getMessage(), ex);
     }
 
+    @ExceptionHandler({NoSuchClientException.class,
+            NoSuchRoomException.class,
+            NoSuchReservationException.class
+    })
     public ResponseEntity<Object> handleException(Exception ex) {
         ex.printStackTrace();
         logException(ex);

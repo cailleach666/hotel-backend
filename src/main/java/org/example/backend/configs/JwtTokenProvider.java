@@ -10,8 +10,8 @@ import java.util.Map;
 
 public class JwtTokenProvider {
 
-    private final long TOKEN_VALIDITY = 1000 * 60 * 60 * 24 * 10;
-    private static byte[] keyBytes = Decoders.BASE64
+    private static final long TOKEN_VALIDITY = (long) 1000 * 60 * 60 * 24 * 10;
+    private static final byte[] keyBytes = Decoders.BASE64
             .decode("YCLg7UP+zuwRxl9Y6kP8C2Kbp8s6BK4MW87iFc39XYM=");
 
     public static final Key key = Keys.hmacShaKeyFor(keyBytes);

@@ -7,6 +7,10 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class RoomSpecifications {
 
+    private RoomSpecifications() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
+
     public static Specification<Room> hasType(RoomType type) {
         return (root, query, criteriaBuilder) ->
                 type == null ? null : criteriaBuilder.equal(root.get("type"), type);

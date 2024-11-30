@@ -11,22 +11,27 @@ import org.example.backend.exception.exceptions.AuthenticationException;
 import org.example.backend.exception.exceptions.ClientEmailAlreadyExistsException;
 import org.example.backend.mappers.ClientMapper;
 import org.example.backend.model.Client;
+import org.example.backend.model.Role;
 import org.example.backend.repository.ClientRepository;
+import org.example.backend.repository.RoleRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
     private final ClientRepository clientRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final ClientMapper clientMapper;
-    private final long TOKEN_VALIDITY = 1000 * 60 * 60 * 24 * 10;
+    private static final long TOKEN_VALIDITY = (long) 1000 * 60 * 60 * 24 * 10;
 
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
         Client client = clientRepository.findByEmail(loginRequestDTO.getEmail());
@@ -35,6 +40,8 @@ public class AuthService {
             Map<String, Object> claims = new HashMap<>();
             claims.put("id", client.getId());
             claims.put("email", client.getEmail());
+            claims.put("roles", client.getRoles().stream()
+                    .map(Role::getName).toList());
             String token = getToken(claims);
 
             LoginResponseDTO responseDTO = new LoginResponseDTO();
@@ -60,12 +67,27 @@ public class AuthService {
         registerRequestDTO.setPassword(hashedPassword);
 
         Client newClient = clientMapper.toClient(registerRequestDTO);
+        Role role;
+        if (Objects.equals(newClient.getEmail(), "admin@example.com")) {
+            role = roleRepository.findByName("ROLE_ADMIN");
+        }
+        else {
+            role = roleRepository.findByName("ROLE_USER");
+        }
+        newClient.setRoles(List.of(role));
+
+        log.info("New client with roles: {}", newClient.getRoles().stream().map(Role::getName).toList());
+
         Client savedClient = clientRepository.save(newClient);
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", newClient.getId());
         claims.put("email", newClient.getEmail());
+        claims.put("roles", newClient.getRoles().stream()
+                .map(Role::getName)
+                .toList());
         String token = getToken(claims);
+        log.info("Claims: {}", claims);
 
         LoginResponseDTO responseDTO = new LoginResponseDTO();
 
