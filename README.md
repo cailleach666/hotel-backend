@@ -75,14 +75,22 @@ Here are 3 ways how you can run the application locally.
 
     ```cd <path to your project>```
 
-3. Start PostgreSQL Only:
+3. Open the docker-compose.yml file and ensure the database credentials are correct and the same credentials are reflected in the src/main/resources/application.properties file (**0ption 1**, 2-3 steps).
+
+4. Start PostgreSQL Only:
 
     ```docker compose up postgres```
 
-4. Verify the Database:
+5. Verify the Database:
 
     You can verify that PostgreSQL is running by checking if the container is active:
     ```docker ps```
+
+6. Now that the database is running, you can build the project:
+
+    ```./gradlew build```
+
+7. After building the project, you can go to src/main/java/BackendApplication.java and run it to start the application.
 
 5. Run the Backend Locally:
 
