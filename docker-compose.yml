@@ -12,6 +12,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: password123
     depends_on:
       - postgres
+    volumes:
+      - ./src/main/resources/application.properties:/app/application.properties
     networks:
       - backend
 
