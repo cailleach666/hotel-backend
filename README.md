@@ -99,22 +99,6 @@ Here are 3 ways how you can run the application locally.
     The backend service will now be accessible at http://localhost:8080, connecting to the PostgreSQL instance running in Docker.
 
 
-## Option 3: Run Both PostgreSQL and Backend Locally
-
-1. Start PostgreSQL Locally (if Docker is not available):
-
-    Install and run PostgreSQL manually, then set up the database using these environment variables:
-
-    ```Database URL: jdbc:postgresql://localhost:5432/hotel```
-
-    ```Username: admin```
-
-    ```Password: password123```
-
-2. Run the Backend Locally:
-
-    ```./gradlew bootRun```
-
 ## Building the Application
 To build the project, first ensure the database is running. You can either:
 
@@ -128,7 +112,7 @@ To build the project, first ensure the database is running. You can either:
 
 The built JAR file will be located in the build/libs directory.
 
-## Running the Application as Docker Containers
+## Running the Application as Docker Containers (for further development)
 
 1. Build the Docker Image for the Backend:
 
