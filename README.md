@@ -92,7 +92,7 @@ Here are 3 ways how you can run the application locally.
 
 7. After building the project, you can go to src/main/java/BackendApplication.java and run it to start the application.
 
-5. Run the Backend Locally:
+8. (Optional) Instead of doing steps 6-7, you can run the Backend Locally:
 
     ```./gradlew bootRun```
 
