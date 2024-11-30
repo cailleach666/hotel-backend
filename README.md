@@ -18,27 +18,46 @@ Here are 3 ways how you can run the application locally.
 
     ```cd <path to your project>```
 
-2. Start only the PostgreSQL container:
+2. Open the docker-compose.yml file and ensure the database credentials are correct:
+    ```
+    postgres:
+    image: postgres
+    container_name: hotel-db
+    environment:
+        POSTGRES_USER: admin
+        POSTGRES_PASSWORD: password123
+        POSTGRES_DB: hotel
+    ```
+
+3. Ensure the same credentials are reflected in the src/main/resources/application.properties file:
+
+    ```spring.datasource.url=jdbc:postgresql://localhost:5432/hotel```
+
+    ```spring.datasource.username=admin```
+
+    ```spring.datasource.password=password123```
+
+4. Start only the PostgreSQL container:
     
     ```docker-compose up postgres```
 
-3. Verify that PostgreSQL is running:
+5. Verify that PostgreSQL is running:
 
     ```docker ps```
 
-4. Now that the database is running, you can build the project:
+6. Now that the database is running, you can build the project:
 
     ```./gradlew build```
 
 
-5. Once the JAR file is built successfully, you can build and run the entire application with Docker:
+7. Once the JAR file is built successfully, you can build and run the entire application with Docker:
 
     ```docker compose up --build```
 
     The PostgreSQL service will run on localhost:5432.
     The Backend service will be available at http://localhost:8080.
 
-3. Verify Database Connection:
+8. Verify Database Connection:
 
     You can verify the PostgreSQL database is running correctly by connecting to it using a database client or running the following command:
 
