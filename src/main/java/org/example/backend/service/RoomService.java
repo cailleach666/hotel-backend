@@ -45,7 +45,7 @@ public class RoomService {
 
     private void validateRoomNumber(String roomNumber, Long roomId) {
         log.info("Validating room number: {}", roomNumber);
-        if (roomRepository.existsByRoomNumber(roomNumber) && (roomId == null || (roomId != null && !roomRepository.findById(roomId).get().getRoomNumber().equals(roomNumber)))) {
+        if (roomRepository.existsByRoomNumber(roomNumber) && (roomId == null || !roomRepository.findById(roomId).get().getRoomNumber().equals(roomNumber))) {
                 throw new RoomNumberAlreadyExistsException("Room with number " + roomNumber + " already exists.");
             }
 
