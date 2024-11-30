@@ -18,15 +18,27 @@ Here are 3 ways how you can run the application locally.
 
     ```cd <path to your project>```
 
-2. Start PostgreSQL and Backend with Docker Compose:
-This command will build and run both the database and the backend application.
+2. Start only the PostgreSQL container:
+    
+    ```docker-compose up postgres```
+
+3. Verify that PostgreSQL is running:
+
+    ```docker ps```
+
+4. Now that the database is running, you can build the project:
+
+    ```./gradlew build```
+
+
+5. Once the JAR file is built successfully, you can build and run the entire application with Docker:
 
     ```docker compose up --build```
 
     The PostgreSQL service will run on localhost:5432.
     The Backend service will be available at http://localhost:8080.
 
-3. **Verify Database Connection:**
+3. Verify Database Connection:
 
     You can verify the PostgreSQL database is running correctly by connecting to it using a database client or running the following command:
 
