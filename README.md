@@ -98,9 +98,9 @@ The built JAR file will be located in the build/libs directory.
 2. Run the Backend Container:
     ```
     docker run -d -p 8080:8080 --name hotel-backend \
-  -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/hotel \
-  -e SPRING_DATASOURCE_USERNAME=admin \
-  -e SPRING_DATASOURCE_PASSWORD=password123 \
-  --network backend \
-  hotel-backend:latest
-  ```
+    -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/hotel \
+    -e SPRING_DATASOURCE_USERNAME=admin \
+    -e SPRING_DATASOURCE_PASSWORD=password123 \
+    --network backend \
+    hotel-backend:latest
+    ```
