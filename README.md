@@ -8,6 +8,33 @@ The application allows users to search for available rooms and make bookings thr
 
 ## How to Run the Application
 
+Here are 3 ways how you can run the application locally.
+
+## Option 1: Run with Docker Compose (Recommended)
+
+1. Clone the Repository:
+
+    ```git clone <your repository URL>```
+
+    ```cd <path to your project>```
+
+2. Start PostgreSQL and Backend with Docker Compose:
+This command will build and run both the database and the backend application.
+
+    ```docker compose up --build```
+
+    The PostgreSQL service will run on localhost:5432.
+    The Backend service will be available at http://localhost:8080.
+
+3. **Verify Database Connection:**
+
+    You can verify the PostgreSQL database is running correctly by connecting to it using a database client or running the following command:
+
+    ```docker exec -it hotel-db psql -U admin -d hotel```
+
+
+## Option 2: Run PostgreSQL in Docker, Backend Locally with Gradle
+
 1. Ensure you have Java 21 and Gradle installed.  
 
 
@@ -15,22 +42,64 @@ The application allows users to search for available rooms and make bookings thr
 
     ```git clone <your repository URL>```
 
+    ```cd <path to your project>```
 
-3. Build and run the application using Gradle:  
+3. Start PostgreSQL Only:
+
+    ```docker compose up postgres```
+
+4. Verify the Database:
+
+    You can verify that PostgreSQL is running by checking if the container is active:
+    ```docker ps```
+
+5. Run the Backend Locally:
+
     ```./gradlew bootRun```
+
+    The backend service will now be accessible at http://localhost:8080, connecting to the PostgreSQL instance running in Docker.
+
+
+## Option 3: Run Both PostgreSQL and Backend Locally
+
+1. Start PostgreSQL Locally (if Docker is not available):
+
+    Install and run PostgreSQL manually, then set up the database using these environment variables:
+
+    ```Database URL: jdbc:postgresql://localhost:5432/hotel```
+
+    ```Username: admin```
+
+    ```Password: password123```
+
+2. Run the Backend Locally:
+
+    ```./gradlew bootRun```
+
 ## Building the Application
-Before building, run in docker compose file service postgres.
+To build the project, first ensure the database is running. You can either:
 
-To build the project, use the following Gradle command:  
+1. Start the database with Docker Compose:
 
-```./gradlew build```  
+    ```docker compose up postgres```
+
+2. Then, build the project using Gradle:
+
+    ```./gradlew build```
 
 The built JAR file will be located in the build/libs directory.
 
-## Running with Docker
+## Running the Application as Docker Containers
 
-Start the services using Docker Compose:  
+1. Build the Docker Image for the Backend:
 
-```docker-compose up --build```
+    ```docker build -t hotel-backend:latest .```
 
-The application will be accessible at http://localhost:8080.
+2. Run the Backend Container:
+
+```    docker run -d -p 8080:8080 --name hotel-backend \
+    -e SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/hotel \
+    -e SPRING_DATASOURCE_USERNAME=admin \
+    -e SPRING_DATASOURCE_PASSWORD=password123 \
+    --network backend \
+    hotel-backend:latest```
