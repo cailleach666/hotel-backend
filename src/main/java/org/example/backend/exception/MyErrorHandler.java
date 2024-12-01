@@ -23,7 +23,8 @@ public class MyErrorHandler {
 
     @ExceptionHandler({NoSuchClientException.class,
             NoSuchRoomException.class,
-            NoSuchReservationException.class
+            NoSuchReservationException.class,
+            NoSuchAmenityException.class,
     })
     public ResponseEntity<Object> handleException(Exception ex) {
         ex.printStackTrace();
@@ -40,6 +41,13 @@ public class MyErrorHandler {
 
     @ExceptionHandler(RoomNumberAlreadyExistsException.class)
     public ResponseEntity<Object> handleRoomNumberAlreadyExists(RoomNumberAlreadyExistsException ex) {
+        ex.printStackTrace();
+        logException(ex);
+        return new ResponseEntity<>(new ErrorResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AmenityNameAlreadyExistsException.class)
+    public ResponseEntity<Object> handleAmenityNameAlreadyExists(AmenityNameAlreadyExistsException ex) {
         ex.printStackTrace();
         logException(ex);
         return new ResponseEntity<>(new ErrorResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);

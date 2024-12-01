@@ -1,4 +1,4 @@
-package org.example.backend.service;
+package org.example.backend.service.auth;
 
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;

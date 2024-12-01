@@ -1,11 +1,11 @@
-package org.example.backend.controller;
+package org.example.backend.controller.auth;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.dtos.auth.LoginRequestDTO;
 import org.example.backend.dtos.auth.LoginResponseDTO;
 import org.example.backend.dtos.auth.RegisterRequestDTO;
-import org.example.backend.service.AuthService;
+import org.example.backend.service.auth.AuthService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

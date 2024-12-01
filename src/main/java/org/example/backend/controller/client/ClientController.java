@@ -1,4 +1,4 @@
-package org.example.backend.controller;
+package org.example.backend.controller.client;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -8,7 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.dtos.ClientDTO;
-import org.example.backend.service.ClientService;
+import org.example.backend.service.client.ClientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

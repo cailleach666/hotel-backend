@@ -1,4 +1,4 @@
-package org.example.backend.controller;
+package org.example.backend.controller.room;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,7 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import org.example.backend.dtos.RoomDTO;
-import org.example.backend.service.RoomService;
+import org.example.backend.service.room.RoomService;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 

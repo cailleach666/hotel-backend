@@ -1,4 +1,4 @@
-package org.example.backend.service;
+package org.example.backend.service.client;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
