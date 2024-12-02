@@ -38,6 +38,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/clients/**").permitAll()
                         .requestMatchers("/rooms/private", "/rooms/private/**").hasRole("ADMIN")
                         .requestMatchers("/rooms/**").permitAll()
+                        .requestMatchers("/amenities/**").permitAll()
                         .requestMatchers("/reservations/**").permitAll()
                         .requestMatchers("/reservations/client/**").permitAll()
                         .anyRequest().authenticated()

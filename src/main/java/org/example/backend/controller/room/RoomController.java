@@ -1,9 +1,10 @@
-package org.example.backend.controller;
+package org.example.backend.controller.room;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.criteria.RoomSearchCriteria;
@@ -11,7 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import org.example.backend.dtos.RoomDTO;
-import org.example.backend.service.RoomService;
+import org.example.backend.service.room.RoomService;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 
@@ -32,7 +33,7 @@ public class RoomController {
     @Operation(summary = "Create a new room", description = "Create a new room and return the room details")
     @ApiResponse(responseCode = "200", description = "Room created successfully")
     @ApiResponse(responseCode = "400", description = "Invalid room data")
-    public ResponseEntity<RoomDTO> createRoom(@RequestBody @Parameter(description = "Room details") RoomDTO roomDTO) {
+    public ResponseEntity<RoomDTO> createRoom(@RequestBody @Valid @Parameter(description = "Room details") RoomDTO roomDTO) {
         log.info("Received request to create a room: {}", roomDTO);
         RoomDTO createdRoom = roomService.createRoom(roomDTO);
         log.info("Room created successfully: {}", createdRoom);
@@ -70,7 +71,7 @@ public class RoomController {
     @ApiResponse(responseCode = "404", description = "Room not found")
     public ResponseEntity<RoomDTO> updateRoom(
             @PathVariable @Parameter(description = "Room ID") Long id,
-            @RequestBody @Parameter(description = "Updated room details") RoomDTO updatedRoomDTO) {
+            @RequestBody @Valid @Parameter(description = "Updated room details") RoomDTO updatedRoomDTO) {
         log.info("Updating room with ID: {}. New data: {}", id, updatedRoomDTO);
         RoomDTO updatedRoom = roomService.updateRoom(id, updatedRoomDTO);
         log.info("Room updated successfully: {}", updatedRoom);

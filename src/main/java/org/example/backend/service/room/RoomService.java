@@ -1,4 +1,4 @@
-package org.example.backend.service;
+package org.example.backend.service.room;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

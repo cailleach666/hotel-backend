@@ -1,4 +1,4 @@
-package org.example.backend.service;
+package org.example.backend.service.client;
 
 import jakarta.transaction.Transactional;
 import lombok.Data;
