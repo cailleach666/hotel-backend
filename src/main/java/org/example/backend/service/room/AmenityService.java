@@ -7,7 +7,7 @@ import org.example.backend.exception.exceptions.AmenityNameAlreadyExistsExceptio
 import org.example.backend.exception.exceptions.NoSuchAmenityException;
 import org.example.backend.mappers.AmenityMapper;
 import org.example.backend.model.Amenity;
-import org.example.backend.repository.AmenityRepository;
+import org.example.backend.repository.room.AmenityRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -13,12 +13,14 @@ import org.springframework.data.domain.Pageable;
 
 import org.example.backend.dtos.RoomDTO;
 import org.example.backend.service.room.RoomService;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -91,12 +93,12 @@ public class RoomController {
     @GetMapping("/search")
     @Operation(summary = "Search rooms with criteria", description = "Search for rooms based on criteria like price and availability")
     @ApiResponse(responseCode = "200", description = "List of rooms based on search criteria")
-    public ResponseEntity<Page<RoomDTO>> getRooms(
+    public ResponseEntity<List<RoomDTO>> getRoomsBySearch(
             @ModelAttribute @Parameter(description = "Search criteria for rooms") RoomSearchCriteria criteria,
-            @PageableDefault(sort = "price") @Parameter(description = "Pagination details") Pageable pageable) {
+            @PageableDefault(size = 5) @Parameter(description = "Pagination details") Pageable pageable) {
         log.info("Searching for rooms with criteria: {} and pagination: {}", criteria, pageable);
-        Page<RoomDTO> rooms = roomService.getRooms(criteria, pageable);
-        log.info("Found {} rooms matching criteria", rooms.getTotalElements());
+        List<RoomDTO> rooms = roomService.getAllRooms(criteria, pageable);
+        log.info("Found {} rooms matching criteria", rooms.size());
         return ResponseEntity.ok(rooms);
     }
 }

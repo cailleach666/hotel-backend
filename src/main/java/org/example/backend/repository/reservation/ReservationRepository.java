@@ -1,4 +1,4 @@
-package org.example.backend.repository;
+package org.example.backend.repository.reservation;
 
 import org.example.backend.model.Client;
 import org.example.backend.model.Reservation;

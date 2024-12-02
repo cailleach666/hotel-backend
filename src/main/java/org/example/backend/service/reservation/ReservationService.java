@@ -12,9 +12,9 @@ import org.example.backend.mappers.ReservationMapper;
 import org.example.backend.model.Client;
 import org.example.backend.model.Reservation;
 import org.example.backend.model.Room;
-import org.example.backend.repository.ClientRepository;
-import org.example.backend.repository.ReservationRepository;
-import org.example.backend.repository.RoomRepository;
+import org.example.backend.repository.client.ClientRepository;
+import org.example.backend.repository.reservation.ReservationRepository;
+import org.example.backend.repository.room.RoomRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

@@ -12,8 +12,8 @@ import org.example.backend.exception.exceptions.ClientEmailAlreadyExistsExceptio
 import org.example.backend.mappers.ClientMapper;
 import org.example.backend.model.Client;
 import org.example.backend.model.Role;
-import org.example.backend.repository.ClientRepository;
-import org.example.backend.repository.RoleRepository;
+import org.example.backend.repository.client.ClientRepository;
+import org.example.backend.repository.auth.RoleRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import jakarta.validation.ConstraintViolation;
