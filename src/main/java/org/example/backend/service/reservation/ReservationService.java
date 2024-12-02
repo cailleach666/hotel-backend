@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.dtos.ReservationDTO;
 import org.example.backend.enums.RoomType;
-import org.example.backend.exception.exceptions.InvalidNumberOfGuestsException;
-import org.example.backend.exception.exceptions.NoSuchClientException;
-import org.example.backend.exception.exceptions.NoSuchReservationException;
-import org.example.backend.exception.exceptions.NoSuchRoomException;
+import org.example.backend.exception.exceptions.*;
 import org.example.backend.mappers.ReservationMapper;
 import org.example.backend.model.Client;
 import org.example.backend.model.Reservation;
@@ -40,6 +37,8 @@ public class ReservationService {
         Client client = getClientById(reservationDTO.getClientId());
 
         Room room = getRoomById(reservationDTO.getRoomId());
+
+        validateRoomAvailability(room.getId(), reservationDTO.getCheckInDate(), reservationDTO.getCheckOutDate());
 
         validateNumberOfGuests(room, reservationDTO.getNumberOfGuests());
 
@@ -197,5 +196,22 @@ public class ReservationService {
             log.error("Invalid number of guests for DELUXE room: {}", numberOfGuests);
             throw new InvalidNumberOfGuestsException("For a DELUXE room, the number of guests must be between 1 and 5.");
         }
+    }
+
+    public void validateRoomAvailability(Long roomId, LocalDate checkInDate, LocalDate checkOutDate) {
+        log.info("Validating availability for room ID: {} between {} and {}", roomId, checkInDate, checkOutDate);
+
+        List<Reservation> reservations = reservationRepository
+                .findByRoomId(roomRepository.findById(roomId)
+                        .orElseThrow(() -> new NoSuchRoomException("Room not found!")));
+
+        for (Reservation reservation : reservations) {
+            if (checkInDate.isBefore(reservation.getCheckOutDate())
+                    && checkOutDate.isAfter(reservation.getCheckInDate())) {
+                log.error("Room ID: {} is already booked for these dates.", roomId);
+                throw new RoomAlreadyBookedException("The room is already booked for the selected dates.");
+            }
+        }
+        log.info("Room ID: {} is available for the selected dates.", roomId);
     }
 }
