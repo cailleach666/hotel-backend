@@ -39,7 +39,7 @@ public class RoomCriteriaRepository {
             Subquery<Long> subquery = query.subquery(Long.class);
             Root<Reservation> reservationRoot = subquery.from(Reservation.class);
 
-            subquery.select(reservationRoot.get("room").get("id"));
+            subquery.select(reservationRoot.get("roomId").get("id"));
 
             Predicate overlappingReservations = cb.and(
                     cb.lessThanOrEqualTo(reservationRoot.get("checkInDate"), criteria.getCheckOutDate()),
@@ -64,7 +64,7 @@ public class RoomCriteriaRepository {
             query.orderBy(cb.desc(root.get("price")));
         }
 
-        int page = criteria.getP().orElseGet(() -> 0);
+        int page = criteria.getPage().orElseGet(() -> 0);
 
         TypedQuery<Room> typedQuery = entityManager.createQuery(query);
         typedQuery.setFirstResult((int) pageable.getOffset());

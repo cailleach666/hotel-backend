@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.criteria.RoomSearchCriteria;
+import org.example.backend.service.reservation.ReservationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +32,7 @@ import java.util.Optional;
 public class RoomController {
 
     private final RoomService roomService;
+    private final ReservationService reservationService;
 
     @PostMapping("/private")
     @Operation(summary = "Create a new room", description = "Create a new room and return the room details")
@@ -100,5 +103,15 @@ public class RoomController {
         List<RoomDTO> rooms = roomService.getAllRooms(criteria, pageable);
         log.info("Found {} rooms matching criteria", rooms.size());
         return ResponseEntity.ok(rooms);
+    }
+
+    @GetMapping("/{id}/availability")
+    @Operation(summary = "Get room availability", description = "Fetches unavailable dates for a specific room")
+    @ApiResponse(responseCode = "200", description = "List of dates unavailable for the room reservation")
+    public ResponseEntity<List<LocalDate>> getRoomAvailability(@PathVariable @Parameter(description = "Room ID") Long id) {
+        log.info("Fetching room availability with ID: {}", id);
+        List<LocalDate> unavailableDates = reservationService.getUnavailableDatesForRoom(id);
+        log.info("Found {} unavailable dates", unavailableDates.size());
+        return ResponseEntity.ok(unavailableDates);
     }
 }

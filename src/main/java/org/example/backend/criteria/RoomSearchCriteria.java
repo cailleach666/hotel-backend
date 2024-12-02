@@ -28,5 +28,5 @@ public class RoomSearchCriteria {
     private LocalDate checkOutDate;
 
     private final Optional<String> sortDirection; // sd = Sort Direction
-    private final Optional<Integer> p; // p = page
+    private final Optional<Integer> page; // p = page
 }

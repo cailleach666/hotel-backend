@@ -15,10 +15,12 @@ import org.example.backend.model.Room;
 import org.example.backend.repository.client.ClientRepository;
 import org.example.backend.repository.reservation.ReservationRepository;
 import org.example.backend.repository.room.RoomRepository;
+import org.example.backend.service.room.RoomService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -30,6 +32,7 @@ public class ReservationService {
     private final ReservationMapper reservationMapper;
     private final RoomRepository roomRepository;
     private final ClientRepository clientRepository;
+    private final RoomService roomService;
 
     public ReservationDTO createReservation(ReservationDTO reservationDTO) {
         log.info("Creating reservation for client with ID: {} for room with ID: {}", reservationDTO.getClientId(), reservationDTO.getRoomId());
@@ -55,10 +58,10 @@ public class ReservationService {
     public List<ReservationDTO> getReservationsByClientId(Long clientId) {
         log.info("Fetching reservations for client with ID: {}", clientId);
 
-        Client client = getClientById(clientId); // Reuse existing method to get the client by ID
-        List<Reservation> reservations = reservationRepository.findByClientId(client); // You need to implement this query in the repository
+        Client client = getClientById(clientId);
+        List<Reservation> reservations = reservationRepository.findByClientId(client);
         log.info("Found {} reservations for client with ID: {}", reservations.size(), clientId);
-        return reservationMapper.toReservationDTOList(reservations); // Map to DTO list
+        return reservationMapper.toReservationDTOList(reservations);
     }
 
     private void validateReservationDates(LocalDate checkInDate, LocalDate checkOutDate) {
@@ -132,6 +135,23 @@ public class ReservationService {
         Reservation reservation = getReservationById(id);
         reservationRepository.delete(reservation);
         reservationRepository.delete(reservation);
+    }
+
+    public List<LocalDate> getUnavailableDatesForRoom(Long roomId) {
+        log.info("Fetching unavailable dates for room ID: {}", roomId);
+        Room room = roomService.getRoomById(roomId);
+        List<Reservation> reservations = reservationRepository.findByRoomId(room);
+
+        List<LocalDate> unavailableDates = new ArrayList<>();
+        for (Reservation reservation : reservations) {
+            LocalDate checkInDate = reservation.getCheckInDate();
+            LocalDate checkOutDate = reservation.getCheckOutDate();
+
+            for (LocalDate date = checkInDate; !date.isEqual(checkOutDate); date = date.plusDays(1)) {
+                unavailableDates.add(date);
+            }
+        }
+        return unavailableDates;
     }
 
     private long calculateDays(Reservation reservation) {
