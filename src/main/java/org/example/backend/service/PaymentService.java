@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.dtos.PaymentDTO;
 import org.example.backend.exception.exceptions.NoSuchPaymentException;
+import org.example.backend.exception.exceptions.NoSuchReservationException;
 import org.example.backend.mappers.PaymentMapper;
 import org.example.backend.model.Client;
 import org.example.backend.model.Payment;
@@ -82,6 +83,10 @@ public class PaymentService {
         Payment payment = paymentRepository.findById(id)
                 .orElseThrow(() -> new NoSuchPaymentException(ERROR_MESSAGE));
 
+        Reservation reservation = reservationRepository.findById(payment.getReservationId().getId())
+                .orElseThrow(() -> new NoSuchReservationException("Reservation not found!"));
+
+        reservation.setStatus("UNCONFIRMED");
         paymentRepository.delete(payment);
         log.info("Payment with ID: {} deleted successfully.", id);
     }

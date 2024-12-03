@@ -20,13 +20,13 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false)
+    @Column(name = "card_number" ,nullable = false)
     private String cardNumber;
 
-    @Column(nullable = false)
+    @Column(name = "payment_date", nullable = false)
     private LocalDate paymentDate;
 
-    @Column(nullable = false)
+    @Column(name = "status", nullable = false)
     private String status;
 
     @Column()

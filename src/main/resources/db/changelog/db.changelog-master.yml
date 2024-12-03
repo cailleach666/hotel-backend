@@ -6,6 +6,9 @@ databaseChangeLog:
       path: "db/changelog/reservation/"
 
   - includeAll:
+      path: "db/changelog/payments/"
+
+  - includeAll:
       path: "db/changelog/amenities/"
 
   - includeAll:

@@ -36,7 +36,7 @@ public class AuthService {
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO) {
         Client client = clientRepository.findByEmail(loginRequestDTO.getEmail());
 
-        if (passwordEncoder.matches(loginRequestDTO.getPassword(), client.getPassword())) {
+        if (client != null && passwordEncoder.matches(loginRequestDTO.getPassword(), client.getPassword())) {
             Map<String, Object> claims = new HashMap<>();
             claims.put("id", client.getId());
             claims.put("email", client.getEmail());
