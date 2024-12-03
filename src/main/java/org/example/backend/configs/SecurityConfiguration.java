@@ -34,6 +34,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/v3/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/payments/**").permitAll()
                         .requestMatchers("/clients").permitAll()
                         .requestMatchers("/clients/**").permitAll()
                         .requestMatchers("/rooms/private", "/rooms/private/**").hasRole("ADMIN")
