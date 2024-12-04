@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.criteria.RoomSearchCriteria;
+import org.example.backend.dtos.MultipleRoomsDTO;
 import org.example.backend.service.reservation.ReservationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +44,26 @@ public class RoomController {
         RoomDTO createdRoom = roomService.createRoom(roomDTO);
         log.info("Room created successfully: {}", createdRoom);
         return ResponseEntity.ok(createdRoom);    }
+
+    @PostMapping("/private/create-multiple")
+    @Operation(summary = "Create multiple rooms", description = "Create a series of rooms starting from a specific room number")
+    @ApiResponse(responseCode = "200", description = "Rooms created successfully")
+    @ApiResponse(responseCode = "400", description = "Invalid room data")
+    public ResponseEntity<List<RoomDTO>> createMultipleRooms(
+            @RequestBody MultipleRoomsDTO createMultipleRoomsDTO) {
+        log.info("Received request to create multiple rooms starting from room number: {} with {} rooms",
+                createMultipleRoomsDTO.getStartRoomNumber(), createMultipleRoomsDTO.getNumberOfRooms());
+
+        List<RoomDTO> createdRooms = roomService.createMultipleRooms(
+                createMultipleRoomsDTO.getStartRoomNumber(),
+                createMultipleRoomsDTO.getNumberOfRooms(),
+                createMultipleRoomsDTO.getPrice(),
+                createMultipleRoomsDTO.getType()
+        );
+        log.info("{} rooms created successfully.", createdRooms.size());
+
+        return ResponseEntity.ok(createdRooms);
+    }
 
     @GetMapping
     @Operation(summary = "Get all rooms", description = "Retrieve a list of all rooms")
@@ -91,6 +112,22 @@ public class RoomController {
         roomService.deleteRoom(id);
         log.info("Room with ID {} deleted successfully", id);
         return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/private/delete-all")
+    @Operation(summary = "Delete all rooms", description = "Deletes all rooms from the system")
+    @ApiResponse(responseCode = "204", description = "All rooms deleted successfully")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    public ResponseEntity<Void> deleteAllRooms() {
+        try {
+            log.info("Received request to delete all rooms.");
+            roomService.deleteAllRooms();
+            log.info("All rooms deleted successfully.");
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            log.error("Error deleting all rooms: {}", e.getMessage());
+            return ResponseEntity.status(500).build();
+        }
     }
 
     @GetMapping("/search")

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.criteria.RoomSearchCriteria;
 import org.example.backend.dtos.RoomDTO;
+import org.example.backend.enums.RoomType;
 import org.example.backend.exception.exceptions.NoSuchRoomException;
 import org.example.backend.exception.exceptions.RoomNumberAlreadyExistsException;
 
@@ -20,6 +21,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -97,36 +99,38 @@ public class RoomService {
         log.info("Room with ID: {} deleted successfully.", id);
     }
 
-//    public Page<RoomDTO> getRoomsOld(RoomSearchCriteria criteria, Pageable pageable) {
-//        log.info("Fetching rooms with criteria: {}", criteria);
-//
-//        Specification<Room> spec = Specification.where(null);
-//
-//        if (criteria.getType() != null) {
-//            spec = spec.and(RoomSpecifications.hasType(criteria.getType()));
-//        }
-//        if (criteria.getMinPrice() != null) {
-//            spec = spec.and(RoomSpecifications.hasPriceGreaterThanOrEqualTo(criteria.getMinPrice()));
-//        }
-//        if (criteria.getMaxPrice() != null) {
-//            spec = spec.and(RoomSpecifications.hasPriceLessThanOrEqualTo(criteria.getMaxPrice()));
-//        }
-//        if (criteria.getAvailable() != null) {
-//            spec = spec.and(RoomSpecifications.isAvailable(criteria.getAvailable()));
-//        }
-//
-//        Page<Room> roomPage = roomRepository.findAll(spec, pageable);
-//        log.info("Found {} rooms based on the given criteria.", roomPage.getTotalElements());
-//        return roomPage.map(roomMapper::toRoomDto);
-//    }
-//
-//    public List<RoomDTO> getRooms(RoomSearchCriteria criteria, Pageable pageable) {
-//        log.info("Fetching rooms with criteria: {}", criteria);
-//
-//        List<Room> rooms = roomCriteriaRepository.getAllRooms(criteria);
-//        List<RoomDTO> roomDTOs = roomMapper.toRoomDTOList(rooms);
-//
-//        long totalRooms = rooms.size(); // Adjust if needed based on paginated total
-//        return new PageImpl<>(roomDTOs, pageable, totalRooms);
-//    }
+    public List<RoomDTO> createMultipleRooms(String startRoomNumber, int numberOfRooms, double price, RoomType roomType) {
+        log.info("Creating {} rooms starting from room number: {}", numberOfRooms, startRoomNumber);
+
+        int startNumber = Integer.parseInt(startRoomNumber);
+        List<RoomDTO> createdRooms = new ArrayList<>();
+
+        for (int i = 0; i < numberOfRooms; i++) {
+            String currentRoomNumber = String.valueOf(startNumber + i);
+
+            if (roomRepository.existsByRoomNumber(currentRoomNumber)) {
+                log.info("Room number {} already exists. Skipping.", currentRoomNumber);
+                continue;
+            }
+
+            RoomDTO roomDTO = new RoomDTO();
+            roomDTO.setRoomNumber(currentRoomNumber);
+            roomDTO.setAvailable(true);
+            roomDTO.setType(roomType);
+            roomDTO.setPrice(price);
+
+            RoomDTO createdRoom = createRoom(roomDTO);
+            createdRooms.add(createdRoom);
+        }
+
+        log.info("Created {} rooms.", createdRooms.size());
+        return createdRooms;
+    }
+
+    public void deleteAllRooms() {
+        log.info("Deleting all rooms.");
+        roomRepository.deleteAll();
+        log.info("All rooms have been successfully deleted.");
+    }
+
 }
