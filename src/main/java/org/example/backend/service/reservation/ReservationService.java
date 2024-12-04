@@ -133,7 +133,6 @@ public class ReservationService {
         log.info("Deleting reservation with ID: {}", id);
         Reservation reservation = getReservationById(id);
         reservationRepository.delete(reservation);
-        reservationRepository.delete(reservation);
     }
 
     public List<LocalDate> getUnavailableDatesForRoom(Long roomId) {

@@ -50,7 +50,7 @@ public class RoomController {
     @ApiResponse(responseCode = "200", description = "Rooms created successfully")
     @ApiResponse(responseCode = "400", description = "Invalid room data")
     public ResponseEntity<List<RoomDTO>> createMultipleRooms(
-            @RequestBody MultipleRoomsDTO createMultipleRoomsDTO) {
+            @RequestBody @Valid MultipleRoomsDTO createMultipleRoomsDTO) {
         log.info("Received request to create multiple rooms starting from room number: {} with {} rooms",
                 createMultipleRoomsDTO.getStartRoomNumber(), createMultipleRoomsDTO.getNumberOfRooms());
 
