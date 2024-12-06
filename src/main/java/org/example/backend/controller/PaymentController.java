@@ -3,6 +3,7 @@ package org.example.backend.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.dtos.PaymentDTO;
@@ -32,7 +33,7 @@ public class PaymentController {
     @Operation(summary = "Create a new payment", description = "Creates a new payment record.")
     @ApiResponse(responseCode = "200", description = "Payment created successfully")
     @ApiResponse(responseCode = "400", description = "Invalid payment data")
-    public ResponseEntity<PaymentDTO> createPayment(@RequestBody PaymentDTO paymentDTO) {
+    public ResponseEntity<PaymentDTO> createPayment(@Valid @RequestBody PaymentDTO paymentDTO) {
         log.info("Received request to create payment: {}", paymentDTO);
         PaymentDTO createdPayment = paymentService.createPayment(paymentDTO);
         log.info("Payment created successfully with ID: {}", createdPayment.getId());
@@ -65,7 +66,7 @@ public class PaymentController {
     @ApiResponse(responseCode = "200", description = "Payment updated successfully")
     @ApiResponse(responseCode = "400", description = "Invalid payment data")
     @ApiResponse(responseCode = "404", description = "Payment not found")
-    public ResponseEntity<PaymentDTO> updatePayment(@PathVariable Long id, @RequestBody PaymentDTO paymentDTO) {
+    public ResponseEntity<PaymentDTO> updatePayment(@PathVariable Long id, @Valid @RequestBody PaymentDTO paymentDTO) {
         log.info("Received request to update payment with ID: {}. New data: {}", id, paymentDTO);
         PaymentDTO updatedPayment = paymentService.updatePayment(id, paymentDTO);
         log.info("Payment updated successfully: {}", updatedPayment);
