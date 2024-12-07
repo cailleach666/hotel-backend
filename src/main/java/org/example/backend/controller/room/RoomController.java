@@ -3,6 +3,7 @@ package org.example.backend.controller.room;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,10 @@ public class RoomController {
     private final RoomAmenityService roomAmenityService;
 
     @PostMapping("/private")
-    @Operation(summary = "Create a new room", description = "Create a new room and return the room details")
+    @Operation(
+            summary = "Create a new room",
+            description = "Create a new room and return the room details",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponse(responseCode = "200", description = "Room created successfully")
     @ApiResponse(responseCode = "400", description = "Invalid room data")
     public ResponseEntity<RoomDTO> createRoom(@RequestBody @Valid @Parameter(description = "Room details") RoomDTO roomDTO) {
@@ -46,7 +50,10 @@ public class RoomController {
         return ResponseEntity.ok(createdRoom);    }
 
     @PostMapping("/private/create-multiple")
-    @Operation(summary = "Create multiple rooms", description = "Create a series of rooms starting from a specific room number")
+    @Operation(
+            summary = "Create multiple rooms",
+            description = "Create a series of rooms starting from a specific room number",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponse(responseCode = "200", description = "Rooms created successfully")
     @ApiResponse(responseCode = "400", description = "Invalid room data")
     public ResponseEntity<List<RoomDTO>> createMultipleRooms(
@@ -91,7 +98,10 @@ public class RoomController {
         return ResponseEntity.ok(room);    }
 
     @PutMapping("/private/{id}")
-    @Operation(summary = "Update room details", description = "Update the details of a specific room")
+    @Operation(
+            summary = "Update room details",
+            description = "Update the details of a specific room",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponse(responseCode = "200", description = "Room updated successfully")
     @ApiResponse(responseCode = "400", description = "Invalid room data")
     @ApiResponse(responseCode = "404", description = "Room not found")
@@ -104,7 +114,10 @@ public class RoomController {
         return ResponseEntity.ok(updatedRoom);    }
 
     @DeleteMapping("/private/{id}")
-    @Operation(summary = "Delete room", description = "Delete a room by its unique ID")
+    @Operation(
+            summary = "Delete room",
+            description = "Delete a room by its unique ID",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponse(responseCode = "204", description = "Room deleted successfully")
     @ApiResponse(responseCode = "404", description = "Room not found")
     public ResponseEntity<Void> deleteRoom(@PathVariable @Parameter(description = "Room ID") Long id) {
@@ -115,7 +128,10 @@ public class RoomController {
     }
 
     @DeleteMapping("/private/delete-all")
-    @Operation(summary = "Delete all rooms", description = "Deletes all rooms from the system")
+    @Operation(
+            summary = "Delete all rooms",
+            description = "Deletes all rooms from the system",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponse(responseCode = "204", description = "All rooms deleted successfully")
     @ApiResponse(responseCode = "500", description = "Internal server error")
     public ResponseEntity<Void> deleteAllRooms() {
@@ -153,7 +169,10 @@ public class RoomController {
     }
 
     @PostMapping("/private/{roomId}/amenities/{amenityId}")
-    @Operation(summary = "Assign an amenity to a room", description = "Assign a specific amenity to a room based on room and amenity IDs",
+    @Operation(
+            summary = "Assign an amenity to a room",
+            description = "Assign a specific amenity to a room based on room and amenity IDs",
+            security = @SecurityRequirement(name = "bearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Amenity successfully assigned to room"),
                     @ApiResponse(responseCode = "404", description = "Room or Amenity not found")
@@ -177,7 +196,10 @@ public class RoomController {
     }
 
     @DeleteMapping("/private/{roomId}/amenities/{amenityId}")
-    @Operation(summary = "Remove an amenity from a room", description = "Remove a specific amenity from a room by providing the room and amenity IDs",
+    @Operation(
+            summary = "Remove an amenity from a room",
+            description = "Remove a specific amenity from a room by providing the room and amenity IDs",
+            security = @SecurityRequirement(name = "bearerAuth"),
             responses = {
                     @ApiResponse(responseCode = "200", description = "Amenity successfully removed from room"),
                     @ApiResponse(responseCode = "404", description = "Room or Amenity not found")
