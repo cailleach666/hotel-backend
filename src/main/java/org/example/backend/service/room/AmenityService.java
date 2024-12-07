@@ -7,6 +7,7 @@ import org.example.backend.exception.exceptions.AmenityNameAlreadyExistsExceptio
 import org.example.backend.exception.exceptions.NoSuchAmenityException;
 import org.example.backend.mappers.AmenityMapper;
 import org.example.backend.model.Amenity;
+import org.example.backend.model.Room;
 import org.example.backend.repository.room.AmenityRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,8 @@ public class AmenityService {
 
     private final AmenityRepository amenityRepository;
     private final AmenityMapper amenityMapper;
+
+    private final RoomAmenityService roomAmenityService;
 
     public AmenityDTO createAmenity(AmenityDTO amenityDTO) {
         log.info("Creating amenity with name: {}", amenityDTO.getName());
@@ -62,8 +65,15 @@ public class AmenityService {
     }
 
     public void deleteAmenity(Long id) {
-        log.info("Deleting amenity with ID: {}", id);
+        log.info("Attempting to delete amenity with ID: {}", id);
         Amenity amenity = getAmenityById(id);
+
+        log.info("Removing amenity with ID: {} from all associated rooms.", id);
+        for (Room room : amenity.getRooms()) {
+            log.info("Removing amenity from room with ID: {}", room.getId());
+            roomAmenityService.removeAmenityFromRoom(room.getId(), id);
+        }
+
         amenityRepository.delete(amenity);
         log.info("Amenity with ID: {} deleted successfully.", id);
     }
