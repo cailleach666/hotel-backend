@@ -92,4 +92,9 @@ public class MyErrorHandler {
         });
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(RoomAlreadyBookedException.class)
+    public ResponseEntity<String> handleRoomAlreadyBookedException(RoomAlreadyBookedException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }

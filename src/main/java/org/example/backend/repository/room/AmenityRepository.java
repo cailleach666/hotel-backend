@@ -1,4 +1,4 @@
-package org.example.backend.repository;
+package org.example.backend.repository.room;
 
 import org.example.backend.model.Amenity;
 import org.springframework.data.jpa.repository.JpaRepository;

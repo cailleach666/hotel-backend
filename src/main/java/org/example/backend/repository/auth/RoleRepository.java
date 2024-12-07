@@ -1,4 +1,4 @@
-package org.example.backend.repository;
+package org.example.backend.repository.auth;
 
 import org.example.backend.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
