@@ -111,4 +111,9 @@ public class MyErrorHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body("Client cannot be deleted: " + ex.getMessage());
     }
+
+    @ExceptionHandler(AmenityAlreadyAssignedException.class)
+    public ResponseEntity<String> handleAmenityAlreadyAssigned(AmenityAlreadyAssignedException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }

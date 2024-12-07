@@ -3,6 +3,7 @@ package org.example.backend.service.room;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.dtos.AmenityDTO;
+import org.example.backend.exception.exceptions.AmenityAlreadyAssignedException;
 import org.example.backend.exception.exceptions.NoSuchAmenityException;
 import org.example.backend.exception.exceptions.NoSuchRoomException;
 import org.example.backend.mappers.AmenityMapper;
@@ -32,15 +33,16 @@ public class RoomAmenityService {
         Amenity amenity = amenityRepository.findById(amenityId)
                 .orElseThrow(() -> new NoSuchAmenityException("Amenity not found!"));
 
-        if (!room.getAmenities().contains(amenity)) {
-            room.getAmenities().add(amenity);
-            double newPrice = room.getPrice() + amenity.getAdditionalCost();
-            room.setPrice(newPrice);
-            roomRepository.save(room);
-            log.info("Amenity assigned successfully. Room price updated to {}", newPrice);
-        } else {
+        if (room.getAmenities().contains(amenity)) {
             log.warn("Amenity with ID: {} is already assigned to room with ID: {}", amenityId, roomId);
+            throw new AmenityAlreadyAssignedException("Amenity is already assigned to this room.");
         }
+
+        room.getAmenities().add(amenity);
+        double newPrice = room.getPrice() + amenity.getAdditionalCost();
+        room.setPrice(newPrice);
+        roomRepository.save(room);
+        log.info("Amenity assigned successfully. Room price updated to {}", newPrice);
     }
 
     public List<AmenityDTO> getAmenitiesByRoom(Long roomId) {

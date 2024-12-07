@@ -9,6 +9,7 @@ import org.example.backend.mappers.AmenityMapper;
 import org.example.backend.model.Amenity;
 import org.example.backend.model.Room;
 import org.example.backend.repository.room.AmenityRepository;
+import org.example.backend.repository.room.RoomRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class AmenityService {
     private final AmenityMapper amenityMapper;
 
     private final RoomAmenityService roomAmenityService;
+    private final RoomRepository roomRepository;
 
     public AmenityDTO createAmenity(AmenityDTO amenityDTO) {
         log.info("Creating amenity with name: {}", amenityDTO.getName());
@@ -55,13 +57,29 @@ public class AmenityService {
         Amenity existingAmenity = getAmenityById(id);
         validateAmenityName(amenityDTO.getName(), id);
 
+        double oldAdditionalCost = existingAmenity.getAdditionalCost();
+
         existingAmenity.setName(amenityDTO.getName());
         existingAmenity.setDescription(amenityDTO.getDescription());
         existingAmenity.setAdditionalCost(amenityDTO.getAdditionalCost());
 
         Amenity updatedAmenity = amenityRepository.save(existingAmenity);
         log.info("Amenity with ID: {} updated successfully.", updatedAmenity.getId());
+
+        updateRoomPricesForAmenity(updatedAmenity, oldAdditionalCost);
+
         return amenityMapper.toAmenityDTO(updatedAmenity);
+    }
+
+    private void updateRoomPricesForAmenity(Amenity updatedAmenity, double oldAdditionalCost) {
+        log.info("Updating room prices based on the updated amenity price.");
+
+        for (Room room : updatedAmenity.getRooms()) {
+            double newPrice = room.getPrice() - oldAdditionalCost + updatedAmenity.getAdditionalCost();
+            room.setPrice(newPrice);
+            roomRepository.save(room);
+            log.info("Room with ID: {} price updated to: {}", room.getId(), newPrice);
+        }
     }
 
     public void deleteAmenity(Long id) {
