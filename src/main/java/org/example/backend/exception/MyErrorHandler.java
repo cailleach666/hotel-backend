@@ -104,4 +104,11 @@ public class MyErrorHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body("Room cannot be deleted: " + ex.getMessage());
     }
+
+    @ExceptionHandler(ClientDeletionException.class)
+    public ResponseEntity<String> handleClientDeletionException(ClientDeletionException ex) {
+        logException(ex);
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("Client cannot be deleted: " + ex.getMessage());
+    }
 }
