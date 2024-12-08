@@ -10,8 +10,8 @@ import org.example.backend.model.Client;
 import org.example.backend.model.Payment;
 import org.example.backend.model.Reservation;
 import org.example.backend.repository.client.ClientRepository;
-import org.example.backend.repository.PaymentRepository;
 import org.example.backend.repository.reservation.ReservationRepository;
+import org.example.backend.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
