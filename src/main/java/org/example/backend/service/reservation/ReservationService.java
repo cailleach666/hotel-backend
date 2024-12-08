@@ -1,24 +1,23 @@
-package org.example.backend.service;
+package org.example.backend.service.reservation;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.dtos.ReservationDTO;
 import org.example.backend.enums.RoomType;
-import org.example.backend.exception.exceptions.InvalidNumberOfGuestsException;
-import org.example.backend.exception.exceptions.NoSuchClientException;
-import org.example.backend.exception.exceptions.NoSuchReservationException;
-import org.example.backend.exception.exceptions.NoSuchRoomException;
+import org.example.backend.exception.exceptions.*;
 import org.example.backend.mappers.ReservationMapper;
 import org.example.backend.model.Client;
 import org.example.backend.model.Reservation;
 import org.example.backend.model.Room;
-import org.example.backend.repository.ClientRepository;
-import org.example.backend.repository.ReservationRepository;
-import org.example.backend.repository.RoomRepository;
+import org.example.backend.repository.client.ClientRepository;
+import org.example.backend.repository.reservation.ReservationRepository;
+import org.example.backend.repository.room.RoomRepository;
+import org.example.backend.service.room.RoomService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -30,6 +29,7 @@ public class ReservationService {
     private final ReservationMapper reservationMapper;
     private final RoomRepository roomRepository;
     private final ClientRepository clientRepository;
+    private final RoomService roomService;
 
     public ReservationDTO createReservation(ReservationDTO reservationDTO) {
         log.info("Creating reservation for client with ID: {} for room with ID: {}", reservationDTO.getClientId(), reservationDTO.getRoomId());
@@ -37,6 +37,8 @@ public class ReservationService {
         Client client = getClientById(reservationDTO.getClientId());
 
         Room room = getRoomById(reservationDTO.getRoomId());
+
+        validateRoomAvailability(room.getId(), reservationDTO.getCheckInDate(), reservationDTO.getCheckOutDate());
 
         validateNumberOfGuests(room, reservationDTO.getNumberOfGuests());
 
@@ -58,10 +60,10 @@ public class ReservationService {
     public List<ReservationDTO> getReservationsByClientId(Long clientId) {
         log.info("Fetching reservations for client with ID: {}", clientId);
 
-        Client client = getClientById(clientId); // Reuse existing method to get the client by ID
-        List<Reservation> reservations = reservationRepository.findByClientId(client); // You need to implement this query in the repository
+        Client client = getClientById(clientId);
+        List<Reservation> reservations = reservationRepository.findByClientId(client);
         log.info("Found {} reservations for client with ID: {}", reservations.size(), clientId);
-        return reservationMapper.toReservationDTOList(reservations); // Map to DTO list
+        return reservationMapper.toReservationDTOList(reservations);
     }
 
     private void validateReservationDates(LocalDate checkInDate, LocalDate checkOutDate) {
@@ -136,6 +138,24 @@ public class ReservationService {
         Room room = getRoomById(reservationMapper.toReservationDto(reservation).getRoomId());
         room.setAvailable(true);
         reservationRepository.delete(reservation);
+        reservationRepository.delete(reservation);
+    }
+
+    public List<LocalDate> getUnavailableDatesForRoom(Long roomId) {
+        log.info("Fetching unavailable dates for room ID: {}", roomId);
+        Room room = roomService.getRoomById(roomId);
+        List<Reservation> reservations = reservationRepository.findByRoomId(room);
+
+        List<LocalDate> unavailableDates = new ArrayList<>();
+        for (Reservation reservation : reservations) {
+            LocalDate checkInDate = reservation.getCheckInDate();
+            LocalDate checkOutDate = reservation.getCheckOutDate();
+
+            for (LocalDate date = checkInDate; !date.isEqual(checkOutDate); date = date.plusDays(1)) {
+                unavailableDates.add(date);
+            }
+        }
+        return unavailableDates;
     }
 
     private long calculateDays(Reservation reservation) {
@@ -181,5 +201,22 @@ public class ReservationService {
             log.error("Invalid number of guests for DELUXE room: {}", numberOfGuests);
             throw new InvalidNumberOfGuestsException("For a DELUXE room, the number of guests must be between 1 and 5.");
         }
+    }
+
+    public void validateRoomAvailability(Long roomId, LocalDate checkInDate, LocalDate checkOutDate) {
+        log.info("Validating availability for room ID: {} between {} and {}", roomId, checkInDate, checkOutDate);
+
+        List<Reservation> reservations = reservationRepository
+                .findByRoomId(roomRepository.findById(roomId)
+                        .orElseThrow(() -> new NoSuchRoomException("Room not found!")));
+
+        for (Reservation reservation : reservations) {
+            if (checkInDate.isBefore(reservation.getCheckOutDate())
+                    && checkOutDate.isAfter(reservation.getCheckInDate())) {
+                log.error("Room ID: {} is already booked for these dates.", roomId);
+                throw new RoomAlreadyBookedException("The room is already booked for the selected dates.");
+            }
+        }
+        log.info("Room ID: {} is available for the selected dates.", roomId);
     }
 }

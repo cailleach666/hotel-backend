@@ -1,4 +1,4 @@
-package org.example.backend.service;
+package org.example.backend.service.client;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,7 +7,7 @@ import org.example.backend.exception.exceptions.ClientEmailAlreadyExistsExceptio
 import org.example.backend.exception.exceptions.NoSuchClientException;
 import org.example.backend.mappers.ClientMapper;
 import org.example.backend.model.Client;
-import org.example.backend.repository.ClientRepository;
+import org.example.backend.repository.client.ClientRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

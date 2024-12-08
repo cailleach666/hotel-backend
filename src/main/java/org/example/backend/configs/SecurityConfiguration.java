@@ -39,6 +39,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/clients/**").permitAll()
                         .requestMatchers("/rooms/private", "/rooms/private/**").hasRole("ADMIN")
                         .requestMatchers("/rooms/**").permitAll()
+                        .requestMatchers("/amenities/**").permitAll()
                         .requestMatchers("/reservations/**").permitAll()
                         .requestMatchers("/reservations/client/**").permitAll()
                         .anyRequest().authenticated()
@@ -54,7 +55,8 @@ public class SecurityConfiguration {
                             "http://193.40.255.16",
                             "http://frontend:80"));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                    config.setAllowedHeaders(List.of("*"));
+                    config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "X-Requested-With"));
+                    config.setExposedHeaders(List.of("Authorization"));
                     config.setAllowCredentials(true);
                     return config;
                 }))

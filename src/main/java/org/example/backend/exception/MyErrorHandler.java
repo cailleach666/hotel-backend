@@ -1,11 +1,17 @@
 package org.example.backend.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.exception.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @ControllerAdvice
@@ -17,7 +23,8 @@ public class MyErrorHandler {
 
     @ExceptionHandler({NoSuchClientException.class,
             NoSuchRoomException.class,
-            NoSuchReservationException.class
+            NoSuchReservationException.class,
+            NoSuchAmenityException.class,
     })
     public ResponseEntity<Object> handleException(Exception ex) {
         ex.printStackTrace();
@@ -34,6 +41,13 @@ public class MyErrorHandler {
 
     @ExceptionHandler(RoomNumberAlreadyExistsException.class)
     public ResponseEntity<Object> handleRoomNumberAlreadyExists(RoomNumberAlreadyExistsException ex) {
+        ex.printStackTrace();
+        logException(ex);
+        return new ResponseEntity<>(new ErrorResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AmenityNameAlreadyExistsException.class)
+    public ResponseEntity<Object> handleAmenityNameAlreadyExists(AmenityNameAlreadyExistsException ex) {
         ex.printStackTrace();
         logException(ex);
         return new ResponseEntity<>(new ErrorResponse(ex.getMessage()), HttpStatus.BAD_REQUEST);
@@ -57,5 +71,30 @@ public class MyErrorHandler {
     public ResponseEntity<ErrorResponse> handleApplicationException(AuthenticationException e) {
         return new ResponseEntity<>(
                 new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+            errors.put(error.getField(), error.getDefaultMessage());
+        }
+        return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Map<String, String>> handleConstraintViolationException(ConstraintViolationException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getConstraintViolations().forEach(violation -> {
+            String fieldName = violation.getPropertyPath().toString();
+            String errorMessage = violation.getMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RoomAlreadyBookedException.class)
+    public ResponseEntity<String> handleRoomAlreadyBookedException(RoomAlreadyBookedException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

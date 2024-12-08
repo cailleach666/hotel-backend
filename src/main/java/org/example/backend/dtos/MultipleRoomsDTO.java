@@ -8,29 +8,25 @@ import org.example.backend.enums.RoomType;
 
 @Data
 @NoArgsConstructor
-public class RoomDTO {
-
-    @Schema(description = "The unique identifier of the room", example = "1")
-    private Long id;
+public class MultipleRoomsDTO {
 
     @Schema(description = "The room number", example = "101")
     @NotBlank(message = "Room number cannot be blank")
     @Pattern(regexp = "\\d{1,4}", message = "Room number must be between 1 to 4 digits")
-    private String roomNumber;
+    private String startRoomNumber;
+
+    @Schema(description = "The total number of rooms to create", example = "2")
+    @NotNull(message = "Number of rooms cannot be null")
+    @Min(value = 1, message = "There must be at least one room")
+    private int numberOfRooms;
 
     @Schema(description = "The price per night for the room", example = "150.00")
     @NotNull(message = "Price cannot be null")
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
     @Digits(integer = 6, fraction = 2, message = "Price must be a valid monetary value with up to 2 decimal places")
-    private Double price;
-
-    @Schema(description = "Indicates whether the room is available", example = "true")
-    private boolean available;
+    private double price;
 
     @Schema(description = "The type of room (e.g., SINGLE, DOUBLE)", example = "SINGLE")
     @NotNull(message = "Room type cannot be null")
     private RoomType type;
-
-    @Schema(description = "A brief description of the room", example = "A comfortable single room with modern amenities.")
-    private String description;
 }

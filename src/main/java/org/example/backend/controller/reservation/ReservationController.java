@@ -1,13 +1,14 @@
-package org.example.backend.controller;
+package org.example.backend.controller.reservation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.dtos.ReservationDTO;
-import org.example.backend.service.ReservationService;
+import org.example.backend.service.reservation.ReservationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,7 @@ public class ReservationController {
     @ApiResponse(responseCode = "200", description = "Reservation created successfully")
     @ApiResponse(responseCode = "400", description = "Invalid reservation data")
     public ResponseEntity<ReservationDTO> createReservation(
-            @RequestBody @Parameter(description = "Reservation details") ReservationDTO reservationDTO) {
+            @RequestBody @Valid @Parameter(description = "Reservation details") ReservationDTO reservationDTO) {
         log.info("Received request to create a reservation: {}", reservationDTO);
         ReservationDTO createdReservation = reservationService.createReservation(reservationDTO);
         log.info("Reservation created successfully: {}", createdReservation);
@@ -77,7 +78,7 @@ public class ReservationController {
     @ApiResponse(responseCode = "404", description = "Reservation not found")
     public ResponseEntity<ReservationDTO> updateReservation(
             @PathVariable @Parameter(description = "Reservation ID") Long id,
-            @RequestBody @Parameter(description = "Updated reservation details") ReservationDTO updatedReservationDTO) {
+            @RequestBody @Valid @Parameter(description = "Updated reservation details") ReservationDTO updatedReservationDTO) {
         log.info("Updating reservation with ID: {}. New data: {}", id, updatedReservationDTO);
         ReservationDTO updatedReservation = reservationService.updateReservation(id, updatedReservationDTO);
         log.info("Reservation updated successfully: {}", updatedReservation);

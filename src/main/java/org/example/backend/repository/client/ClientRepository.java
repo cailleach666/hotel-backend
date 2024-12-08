@@ -1,4 +1,4 @@
-package org.example.backend.repository;
+package org.example.backend.repository.client;
 
 import org.example.backend.model.Client;
 import org.springframework.data.jpa.repository.JpaRepository;

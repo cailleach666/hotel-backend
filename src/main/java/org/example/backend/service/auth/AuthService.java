@@ -1,4 +1,4 @@
-package org.example.backend.service;
+package org.example.backend.service.auth;
 
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
@@ -12,21 +12,20 @@ import org.example.backend.exception.exceptions.ClientEmailAlreadyExistsExceptio
 import org.example.backend.mappers.ClientMapper;
 import org.example.backend.model.Client;
 import org.example.backend.model.Role;
-import org.example.backend.repository.ClientRepository;
-import org.example.backend.repository.RoleRepository;
+import org.example.backend.repository.client.ClientRepository;
+import org.example.backend.repository.auth.RoleRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+    private final Validator validator;
     private final ClientRepository clientRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
@@ -57,6 +56,8 @@ public class AuthService {
     }
 
     public LoginResponseDTO register(RegisterRequestDTO registerRequestDTO) {
+        validateRegisterRequest(registerRequestDTO);
+
         log.info("Registering new client with email: {}", registerRequestDTO.getEmail());
 
         if (clientRepository.findByEmail(registerRequestDTO.getEmail()) != null) {
@@ -108,6 +109,18 @@ public class AuthService {
                 .setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY))
                 .signWith(JwtTokenProvider.key)
                 .compact();
+    }
+
+    private void validateRegisterRequest(RegisterRequestDTO requestDTO) {
+        Set<ConstraintViolation<RegisterRequestDTO>> violations = validator.validate(requestDTO);
+        if (!violations.isEmpty()) {
+            StringBuilder errorMessages = new StringBuilder();
+            for (ConstraintViolation<RegisterRequestDTO> violation : violations) {
+                errorMessages.append(violation.getPropertyPath())
+                        .append(": ").append(violation.getMessage()).append("\n");
+            }
+            throw new IllegalArgumentException("Validation failed: " + errorMessages.toString());
+        }
     }
 
 }

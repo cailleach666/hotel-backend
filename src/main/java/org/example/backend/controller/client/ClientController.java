@@ -1,13 +1,14 @@
-package org.example.backend.controller;
+package org.example.backend.controller.client;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.dtos.ClientDTO;
-import org.example.backend.service.ClientService;
+import org.example.backend.service.client.ClientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class ClientController {
     @Operation(summary = "Create a new client", description = "Create a new client and return the client details")
     @ApiResponse(responseCode = "200", description = "Client created successfully")
     @ApiResponse(responseCode = "400", description = "Invalid client data")
-    public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO clientDTO) {
+    public ResponseEntity<ClientDTO> createClient(@RequestBody @Valid ClientDTO clientDTO) {
         log.info("Received request to create client: {}", clientDTO);
         ClientDTO createdClient = clientService.createClient(clientDTO);
         log.info("Client created successfully: {}", createdClient);
@@ -62,8 +63,9 @@ public class ClientController {
     @ApiResponse(responseCode = "200", description = "Client updated successfully")
     @ApiResponse(responseCode = "400", description = "Invalid client data")
     @ApiResponse(responseCode = "404", description = "Client not found")
-    public ResponseEntity<ClientDTO> updateClient(@PathVariable @Parameter(description = "Client ID") Long id,
-                                                  @RequestBody @Parameter(description = "Updated client details") ClientDTO updatedClientDTO) {
+    public ResponseEntity<ClientDTO> updateClient(
+            @PathVariable @Parameter(description = "Client ID") Long id,
+            @RequestBody @Valid @Parameter(description = "Updated client details") ClientDTO updatedClientDTO) {
         log.info("Updating client with ID: {}. New data: {}", id, updatedClientDTO);
         ClientDTO updatedClient = clientService.updateClient(id, updatedClientDTO);
         log.info("Client updated successfully: {}", updatedClient);
