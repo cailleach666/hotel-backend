@@ -9,9 +9,9 @@ import org.example.backend.mappers.PaymentMapper;
 import org.example.backend.model.Client;
 import org.example.backend.model.Payment;
 import org.example.backend.model.Reservation;
-import org.example.backend.repository.ClientRepository;
+import org.example.backend.repository.client.ClientRepository;
 import org.example.backend.repository.PaymentRepository;
-import org.example.backend.repository.ReservationRepository;
+import org.example.backend.repository.reservation.ReservationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
