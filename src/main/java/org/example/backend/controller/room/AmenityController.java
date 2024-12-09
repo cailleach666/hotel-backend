@@ -3,6 +3,7 @@ package org.example.backend.controller.room;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,11 @@ public class AmenityController {
 
     private final AmenityService amenityService;
 
-    @PostMapping
-    @Operation(summary = "Create a new amenity", description = "Create a new amenity and return the amenity details")
+    @PostMapping("/private")
+    @Operation(
+            summary = "Create a new amenity",
+            description = "Create a new amenity and return the amenity details",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponse(responseCode = "200", description = "Amenity created successfully")
     @ApiResponse(responseCode = "400", description = "Invalid amenity data")
     public ResponseEntity<AmenityDTO> createAmenity(
@@ -61,8 +65,11 @@ public class AmenityController {
         return ResponseEntity.ok(amenity);
     }
 
-    @PutMapping("/{id}")
-    @Operation(summary = "Update amenity details", description = "Update the details of a specific amenity")
+    @PutMapping("/private/{id}")
+    @Operation(
+            summary = "Update amenity details",
+            description = "Update the details of a specific amenity",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponse(responseCode = "200", description = "Amenity updated successfully")
     @ApiResponse(responseCode = "400", description = "Invalid amenity data")
     @ApiResponse(responseCode = "404", description = "Amenity not found")
@@ -75,8 +82,11 @@ public class AmenityController {
         return ResponseEntity.ok(updatedAmenity);
     }
 
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Delete an amenity", description = "Delete an amenity by its unique ID")
+    @DeleteMapping("/private/{id}")
+    @Operation(
+            summary = "Delete an amenity",
+            description = "Delete an amenity by its unique ID",
+            security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponse(responseCode = "204", description = "Amenity deleted successfully")
     @ApiResponse(responseCode = "404", description = "Amenity not found")
     public ResponseEntity<Void> deleteAmenity(@PathVariable @Parameter(description = "Amenity ID") Long id) {

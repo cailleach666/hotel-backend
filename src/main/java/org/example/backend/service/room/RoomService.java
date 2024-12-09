@@ -3,6 +3,7 @@ package org.example.backend.service.room;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.criteria.RoomSearchCriteria;
+import org.example.backend.dtos.AmenityDTO;
 import org.example.backend.dtos.RoomDTO;
 import org.example.backend.enums.RoomType;
 import org.example.backend.exception.exceptions.NoSuchRoomException;
@@ -29,9 +30,10 @@ import java.util.List;
 public class RoomService {
 
     private final RoomRepository roomRepository;
-    private final ReservationRepository reservationRepository;
     private final RoomCriteriaRepository roomCriteriaRepository;
     private final RoomMapper roomMapper;
+
+    private final ReservationRepository reservationRepository;
 
     public RoomDTO createRoom(RoomDTO roomDTO) {
         log.info("Creating room with number: {}", roomDTO.getRoomNumber());
@@ -100,6 +102,10 @@ public class RoomService {
             log.warn("Room with ID: {} has active reservations. Cannot delete.", id);
             throw new RoomDeletionException("Room with ID: " + id + " has active reservations and cannot be deleted.");
         }
+
+        log.info("Clearing all amenities associated with room with ID: {}", id);
+        room.getAmenities().clear();
+        roomRepository.save(room);
 
         roomRepository.delete(room);
         log.info("Room with ID: {} deleted successfully.", id);
