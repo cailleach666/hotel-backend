@@ -3,21 +3,21 @@ package org.example.backend.service.room;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.criteria.RoomSearchCriteria;
+import org.example.backend.dtos.AmenityDTO;
 import org.example.backend.dtos.RoomDTO;
 import org.example.backend.enums.RoomType;
 import org.example.backend.exception.exceptions.NoSuchRoomException;
+import org.example.backend.exception.exceptions.RoomDeletionException;
 import org.example.backend.exception.exceptions.RoomNumberAlreadyExistsException;
 
 import org.example.backend.mappers.RoomMapper;
+import org.example.backend.model.Reservation;
 import org.example.backend.model.Room;
+import org.example.backend.repository.reservation.ReservationRepository;
 import org.example.backend.repository.room.RoomCriteriaRepository;
 import org.example.backend.repository.room.RoomRepository;
 
-import org.example.backend.specifications.RoomSpecifications;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 
 import org.springframework.stereotype.Service;
 
@@ -32,6 +32,8 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final RoomCriteriaRepository roomCriteriaRepository;
     private final RoomMapper roomMapper;
+
+    private final ReservationRepository reservationRepository;
 
     public RoomDTO createRoom(RoomDTO roomDTO) {
         log.info("Creating room with number: {}", roomDTO.getRoomNumber());
@@ -93,8 +95,18 @@ public class RoomService {
     }
 
     public void deleteRoom(Long id) {
-        log.info("Deleting room with ID: {}", id);
+        log.info("Attempting to delete room with ID: {}", id);
         Room room = getRoomById(id);
+
+        if (hasReservations(room)) {
+            log.warn("Room with ID: {} has active reservations. Cannot delete.", id);
+            throw new RoomDeletionException("Room with ID: " + id + " has active reservations and cannot be deleted.");
+        }
+
+        log.info("Clearing all amenities associated with room with ID: {}", id);
+        room.getAmenities().clear();
+        roomRepository.save(room);
+
         roomRepository.delete(room);
         log.info("Room with ID: {} deleted successfully.", id);
     }
@@ -128,9 +140,29 @@ public class RoomService {
     }
 
     public void deleteAllRooms() {
-        log.info("Deleting all rooms.");
-        roomRepository.deleteAll();
-        log.info("All rooms have been successfully deleted.");
+        log.info("Attempting to delete all rooms.");
+
+        List<Room> rooms = getAllRoomsEntity();
+        for (Room room : rooms) {
+            try {
+                log.info("Attempting to delete room with ID: {}", room.getId());
+                if (hasReservations(room)) {
+                    log.warn("Room with ID: {} has active reservations. Skipping deletion.", room.getId());
+                    continue;
+                }
+                roomRepository.delete(room);
+                log.info("Room with ID: {} deleted successfully.", room.getId());
+            } catch (Exception e) {
+                log.error("Failed to delete room with ID: {}. Reason: {}", room.getId(), e.getMessage());
+            }
+        }
+        log.info("Completed deletion attempt for all rooms.");
+    }
+
+    private boolean hasReservations(Room room) {
+        log.info("Checking for active reservations for room ID: {}", room.getId());
+        List<Reservation> reservations = reservationRepository.findByRoomId(room);
+        return !reservations.isEmpty();
     }
 
 }

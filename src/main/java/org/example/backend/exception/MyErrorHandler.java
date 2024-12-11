@@ -97,4 +97,23 @@ public class MyErrorHandler {
     public ResponseEntity<String> handleRoomAlreadyBookedException(RoomAlreadyBookedException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(RoomDeletionException.class)
+    public ResponseEntity<String> handleRoomDeletionException(RoomDeletionException ex) {
+        logException(ex);
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("Room cannot be deleted: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(ClientDeletionException.class)
+    public ResponseEntity<String> handleClientDeletionException(ClientDeletionException ex) {
+        logException(ex);
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("Client cannot be deleted: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(AmenityAlreadyAssignedException.class)
+    public ResponseEntity<String> handleAmenityAlreadyAssigned(AmenityAlreadyAssignedException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }

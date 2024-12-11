@@ -48,6 +48,9 @@ public class ReservationService {
         reservation.setClientId(client);
         reservation.setRoomId(room);
         reservation.setTotalPrice(calculateTotalPrice(reservation));
+        reservation.setStatus("UNCONFIRMED");
+
+        room.setAvailable(false);
 
         Reservation savedReservation = reservationRepository.save(reservation);
         log.info("Reservation created successfully with ID: {}", savedReservation.getId());
@@ -132,6 +135,9 @@ public class ReservationService {
     public void deleteReservation(Long id) {
         log.info("Deleting reservation with ID: {}", id);
         Reservation reservation = getReservationById(id);
+        Room room = getRoomById(reservationMapper.toReservationDto(reservation).getRoomId());
+        room.setAvailable(true);
+        reservationRepository.delete(reservation);
         reservationRepository.delete(reservation);
     }
 

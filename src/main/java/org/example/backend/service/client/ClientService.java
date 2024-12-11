@@ -5,9 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.backend.dtos.ClientDTO;
 import org.example.backend.exception.exceptions.ClientEmailAlreadyExistsException;
 import org.example.backend.exception.exceptions.NoSuchClientException;
+import org.example.backend.exception.exceptions.RoomDeletionException;
 import org.example.backend.mappers.ClientMapper;
 import org.example.backend.model.Client;
+import org.example.backend.model.Reservation;
+import org.example.backend.model.Room;
 import org.example.backend.repository.client.ClientRepository;
+import org.example.backend.repository.reservation.ReservationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +23,7 @@ public class ClientService {
 
     private final ClientRepository clientRepository;
     private final ClientMapper clientMapper;
+    private final ReservationRepository reservationRepository;
 
     public ClientDTO createClient(ClientDTO clientDTO) {
         log.info("Creating a new client with email: {}", clientDTO.getEmail());
@@ -81,9 +86,21 @@ public class ClientService {
     }
 
     public void deleteClient(Long id) {
-        log.info("Deleting client with id: {}", id);
+        log.info("Attempting to delete client with ID: {}", id);
         Client client = getClientById(id);
+
+        if (hasReservations(client)) {
+            log.warn("Client with ID: {} has active reservations. Cannot delete.", id);
+            throw new RoomDeletionException("Client with ID: " + id + " has active reservations and cannot be deleted.");
+        }
+
         clientRepository.delete(client);
         log.info("Client with id: {} deleted successfully", id);
+    }
+
+    private boolean hasReservations(Client client) {
+        log.info("Checking for active reservations for room ID: {}", client.getId());
+        List<Reservation> reservations = reservationRepository.findByClientId(client);
+        return !reservations.isEmpty();
     }
 }

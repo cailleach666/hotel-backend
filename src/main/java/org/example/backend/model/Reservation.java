@@ -24,7 +24,7 @@ public class Reservation {
     @Column(name = "total_price")
     private Double totalPrice;
 
-    @Column(nullable = true)
+    @Column()
     private String status;
 
     @ManyToOne(fetch = FetchType.LAZY)
