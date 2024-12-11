@@ -5,11 +5,15 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class ClientDTO {
 
     @Schema(description = "The unique identifier of the client", example = "1")
@@ -34,5 +38,9 @@ public class ClientDTO {
             message = "Phone number must be valid",
             flags = Pattern.Flag.CASE_INSENSITIVE)
     private String phone;
+
+    @Schema(description = "The client's password", example = "password123")
+    @NotNull
+    private String password;
 
 }

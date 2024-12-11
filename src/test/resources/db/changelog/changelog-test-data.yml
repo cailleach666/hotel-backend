@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - include:
+      file: /db/changelog/db.changelog-master.yml
+
+  - changeSet:
+      id: test-data
+      author: arhrul
+      changes:
+        - insert:
+            tableName: client
+            columns:
+              - name: id
+                value: "1"
+              - name: first_name
+                value: "Test"
+              - name: last_name
+                value: "Client"
+              - name: email
+                value: "testclient@gmail.com"
+              - name: password
+                value: "password1234"
