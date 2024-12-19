@@ -41,7 +41,6 @@ class ClientServiceTest {
         clientDTO.setLastName("Doe");
         clientDTO.setEmail("john.doe@example.com");
         clientDTO.setPhone("+1234567890");
-        clientDTO.setPassword("password123");
 
         Client clientEntity = new Client();
         clientEntity.setFirstName("John");
@@ -121,7 +120,6 @@ class ClientServiceTest {
         clientDTO.setLastName("Doe");
         clientDTO.setEmail("jane.doe@example.com");
         clientDTO.setPhone("+1234567890");
-        clientDTO.setPassword("newpassword123");
 
         Client existingClient = new Client();
         existingClient.setId(clientId);
@@ -133,7 +131,6 @@ class ClientServiceTest {
         updatedClient.setFirstName(clientDTO.getFirstName());
         updatedClient.setLastName(clientDTO.getLastName());
         updatedClient.setPhone(clientDTO.getPhone());
-        updatedClient.setPassword(clientDTO.getPassword());
 
         given(clientRepository.findById(clientId)).willReturn(Optional.of(existingClient));
         given(clientRepository.existsByEmail(clientDTO.getEmail())).willReturn(false);
