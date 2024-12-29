@@ -7,7 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.backend.dtos.PaymentDTO;
-import org.example.backend.service.PaymentService;
+import org.example.backend.service.payment.PaymentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,17 +48,6 @@ public class PaymentController {
         List<PaymentDTO> payments = paymentService.getAllPayments();
         log.info("Successfully retrieved {} payment records.", payments.size());
         return ResponseEntity.ok(payments);
-    }
-
-    @GetMapping("/{id}")
-    @Operation(summary = "Get payment by ID", description = "Retrieves payment details by ID.")
-    @ApiResponse(responseCode = "200", description = "Payment found")
-    @ApiResponse(responseCode = "404", description = "Payment not found")
-    public ResponseEntity<PaymentDTO> getPaymentById(@PathVariable long id) {
-        log.info("Received request to retrieve payment with ID: {}", id);
-        PaymentDTO payment = paymentService.getPaymentById(id);
-        log.info("Payment found: {}", payment);
-        return ResponseEntity.ok(payment);
     }
 
     @PutMapping("/{id}")

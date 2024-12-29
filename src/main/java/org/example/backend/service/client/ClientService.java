@@ -36,10 +36,6 @@ public class ClientService {
         return clientMapper.toClientDto(savedClient);
     }
 
-    public ClientDTO getClientByEmail(String email) {
-        return clientMapper.toClientDto(clientRepository.findByEmail(email));
-    }
-
     public Client getClientById(Long id) {
         log.info("Fetching client by id: {}", id);
         return clientRepository.findById(id)

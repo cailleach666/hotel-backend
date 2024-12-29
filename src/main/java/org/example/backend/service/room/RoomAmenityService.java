@@ -23,15 +23,17 @@ public class RoomAmenityService {
     private final RoomRepository roomRepository;
     private final AmenityRepository amenityRepository;
     private final AmenityMapper amenityMapper;
+    private static final String ROOM_NOT_FOUND = "Room not found!";
+    private static final String AMENITY_NOT_FOUND = "Amenity not found!";
 
     public void assignAmenityToRoom(Long roomId, Long amenityId) {
         log.info("Attempting to assign amenity with ID: {} to room with ID: {}", amenityId, roomId);
 
         Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new NoSuchRoomException("Room not found!"));
+                .orElseThrow(() -> new NoSuchRoomException(ROOM_NOT_FOUND));
 
         Amenity amenity = amenityRepository.findById(amenityId)
-                .orElseThrow(() -> new NoSuchAmenityException("Amenity not found!"));
+                .orElseThrow(() -> new NoSuchAmenityException(AMENITY_NOT_FOUND));
 
         if (room.getAmenities().contains(amenity)) {
             log.warn("Amenity with ID: {} is already assigned to room with ID: {}", amenityId, roomId);
@@ -49,7 +51,7 @@ public class RoomAmenityService {
         log.info("Fetching amenities for room with ID: {}", roomId);
 
         Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new NoSuchRoomException("Room not found!"));
+                .orElseThrow(() -> new NoSuchRoomException(ROOM_NOT_FOUND));
 
         List<Amenity> amenities = room.getAmenities();
         log.info("Found {} amenities for room with ID: {}", amenities.size(), roomId);
@@ -59,10 +61,10 @@ public class RoomAmenityService {
     public void removeAmenityFromRoom(Long roomId, Long amenityId) {
         log.info("Attempting to remove amenity with ID: {} from room with ID: {}", amenityId, roomId);
         Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new NoSuchRoomException("Room not found!"));
+                .orElseThrow(() -> new NoSuchRoomException(ROOM_NOT_FOUND));
 
         Amenity amenity = amenityRepository.findById(amenityId)
-                .orElseThrow(() -> new NoSuchAmenityException("Amenity not found!"));
+                .orElseThrow(() -> new NoSuchAmenityException(AMENITY_NOT_FOUND));
 
         if (room.getAmenities().remove(amenity)) {
             double newPrice = room.getPrice() - amenity.getAdditionalCost();

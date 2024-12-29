@@ -30,6 +30,7 @@ public class ReservationService {
     private final RoomRepository roomRepository;
     private final ClientRepository clientRepository;
     private final RoomService roomService;
+    private static final String ERROR_MESSAGE = "Room not found!";
 
     public ReservationDTO createReservation(ReservationDTO reservationDTO) {
         log.info("Creating reservation for client with ID: {} for room with ID: {}", reservationDTO.getClientId(), reservationDTO.getRoomId());
@@ -87,7 +88,7 @@ public class ReservationService {
     public Room getRoomById(Long id) {
         log.info("Fetching room with ID: {}", id);
         return roomRepository.findById(id)
-                .orElseThrow(() -> new NoSuchRoomException("Room not found!"));
+                .orElseThrow(() -> new NoSuchRoomException(ERROR_MESSAGE));
     }
 
     public Client getClientById(Long id) {
@@ -165,7 +166,7 @@ public class ReservationService {
     private Double calculateTotalPrice(Reservation reservation) {
         long days = calculateDays(reservation);
         Room room = roomRepository.findById(reservation.getRoomId().getId())
-                .orElseThrow(() ->  new NoSuchRoomException("Room not found!"));
+                .orElseThrow(() ->  new NoSuchRoomException(ERROR_MESSAGE));
         return room.getPrice() * days;
     }
 
@@ -208,7 +209,7 @@ public class ReservationService {
 
         List<Reservation> reservations = reservationRepository
                 .findByRoomId(roomRepository.findById(roomId)
-                        .orElseThrow(() -> new NoSuchRoomException("Room not found!")));
+                        .orElseThrow(() -> new NoSuchRoomException(ERROR_MESSAGE)));
 
         for (Reservation reservation : reservations) {
             if (checkInDate.isBefore(reservation.getCheckOutDate())
