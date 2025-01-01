@@ -89,7 +89,6 @@ public class BaseTests {
         clientDTO.setLastName("Doe");
         clientDTO.setEmail("john.doe@example.com");
         clientDTO.setPhone("+1234567890");
-        clientDTO.setPassword("password123");
 
         client = new Client();
         client.setId(1L);
