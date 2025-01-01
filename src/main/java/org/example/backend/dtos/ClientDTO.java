@@ -39,8 +39,4 @@ public class ClientDTO {
             flags = Pattern.Flag.CASE_INSENSITIVE)
     private String phone;
 
-    @Schema(description = "The client's password", example = "password123")
-    @NotNull
-    private String password;
-
 }

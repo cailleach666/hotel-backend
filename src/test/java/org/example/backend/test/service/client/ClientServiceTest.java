@@ -6,6 +6,7 @@ import org.example.backend.exception.exceptions.NoSuchClientException;
 import org.example.backend.mappers.ClientMapper;
 import org.example.backend.model.Client;
 import org.example.backend.repository.client.ClientRepository;
+import org.example.backend.repository.reservation.ReservationRepository;  // Import ReservationRepository
 import org.example.backend.service.client.ClientService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +31,9 @@ class ClientServiceTest {
     @Mock
     private ClientMapper clientMapper;
 
+    @Mock
+    private ReservationRepository reservationRepository;
+
     @InjectMocks
     private ClientService clientService;
 
@@ -41,7 +45,6 @@ class ClientServiceTest {
         clientDTO.setLastName("Doe");
         clientDTO.setEmail("john.doe@example.com");
         clientDTO.setPhone("+1234567890");
-        clientDTO.setPassword("password123");
 
         Client clientEntity = new Client();
         clientEntity.setFirstName("John");
@@ -121,7 +124,6 @@ class ClientServiceTest {
         clientDTO.setLastName("Doe");
         clientDTO.setEmail("jane.doe@example.com");
         clientDTO.setPhone("+1234567890");
-        clientDTO.setPassword("newpassword123");
 
         Client existingClient = new Client();
         existingClient.setId(clientId);
@@ -133,7 +135,6 @@ class ClientServiceTest {
         updatedClient.setFirstName(clientDTO.getFirstName());
         updatedClient.setLastName(clientDTO.getLastName());
         updatedClient.setPhone(clientDTO.getPhone());
-        updatedClient.setPassword(clientDTO.getPassword());
 
         given(clientRepository.findById(clientId)).willReturn(Optional.of(existingClient));
         given(clientRepository.existsByEmail(clientDTO.getEmail())).willReturn(false);
