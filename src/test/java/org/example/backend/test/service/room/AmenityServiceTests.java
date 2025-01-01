@@ -20,10 +20,10 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class AmenityServiceTests extends BaseTests {
+class AmenityServiceTests extends BaseTests {
 
     @Test
-    public void createAmenitySuccessfully() {
+    void createAmenitySuccessfully() {
         given(amenityRepository.save(amenityFreeWifi)).willReturn(amenityFreeWifi);
         given(amenityMapper.toAmenity(amenityDTOFreeWifi)).willReturn(amenityFreeWifi);
         given(amenityMapper.toAmenityDTO(amenityFreeWifi)).willReturn(amenityDTOFreeWifi);
@@ -36,7 +36,7 @@ public class AmenityServiceTests extends BaseTests {
     }
 
     @Test
-    public void createAmenity_NameAlreadyExists_ShouldThrowException() {
+    void createAmenity_NameAlreadyExists_ShouldThrowException() {
         given(amenityRepository.existsByName("Free WiFi")).willReturn(true);
 
         Throwable thrown = catchThrowable(() -> amenityService.createAmenity(amenityDTOFreeWifi));
@@ -45,7 +45,7 @@ public class AmenityServiceTests extends BaseTests {
     }
 
     @Test
-    public void getAmenityByIdSuccessfully() {
+    void getAmenityByIdSuccessfully() {
         given(amenityRepository.findById(1L)).willReturn(Optional.of(amenityFreeWifi));
         given(amenityMapper.toAmenityDTO(amenityFreeWifi)).willReturn(amenityDTOFreeWifi);
 
@@ -57,7 +57,7 @@ public class AmenityServiceTests extends BaseTests {
     }
 
     @Test
-    public void getAmenityById_shouldThrowExceptionAmenityNotFound() {
+    void getAmenityById_shouldThrowExceptionAmenityNotFound() {
         given(amenityRepository.findById(1L)).willReturn(Optional.empty());
 
         Throwable thrown = catchThrowable(() -> amenityService.getAmenity(1L));
@@ -66,21 +66,20 @@ public class AmenityServiceTests extends BaseTests {
     }
 
     @Test
-    public void getAllAmenities() {
+    void getAllAmenities() {
         List<Amenity> amenityList = List.of(amenityFreeWifi, amenityFreeWifi);
         given(amenityRepository.findAll()).willReturn(amenityList);
         given(amenityMapper.toAmenityDTOList(amenityList)).willReturn(List.of(amenityDTOFreeWifi, amenityDTOBreakfast));
 
         List<AmenityDTO> amenityDTOS = amenityService.getAllAmenities();
 
-        assertThat(amenityDTOS).isNotEmpty();
-        assertThat(amenityDTOS.size()).isEqualTo(2);
+        assertThat(amenityDTOS).hasSize(2);
         assertThat(amenityDTOS.get(0).getName()).isEqualTo("Free WiFi");
         assertThat(amenityDTOS.get(1).getName()).isEqualTo("Breakfast");
     }
 
     @Test
-    public void updateAmenity_Successfully() {
+    void updateAmenity_Successfully() {
         amenityDTOFreeWifi.setAdditionalCost(10.0);
         given(amenityRepository.findById(1L)).willReturn(Optional.of(amenityFreeWifi));
         given(amenityRepository.save(amenityFreeWifi)).willReturn(amenityFreeWifi);
@@ -114,7 +113,7 @@ public class AmenityServiceTests extends BaseTests {
     }
 
     @Test
-    public void updateAmenity_NameAlreadyExists() {
+    void updateAmenity_NameAlreadyExists() {
         given(amenityRepository.findById(1L)).willReturn(Optional.of(amenityFreeWifi));
         given(amenityRepository.existsByName("Breakfast")).willReturn(true);
 
@@ -124,7 +123,7 @@ public class AmenityServiceTests extends BaseTests {
     }
 
     @Test
-    public void deleteAmenitySuccessfully() {
+    void deleteAmenitySuccessfully() {
         given(amenityRepository.findById(1L)).willReturn(Optional.of(amenityFreeWifi));
 
         amenityService.deleteAmenity(1L);
@@ -133,7 +132,7 @@ public class AmenityServiceTests extends BaseTests {
     }
 
     @Test
-    public void deleteAmenity_ShouldThrowExceptionNotFound() {
+    void deleteAmenity_ShouldThrowExceptionNotFound() {
         given(amenityRepository.findById(1L)).willReturn(Optional.empty());
 
         Throwable thrown = catchThrowable(() -> amenityService.deleteAmenity(1L));
