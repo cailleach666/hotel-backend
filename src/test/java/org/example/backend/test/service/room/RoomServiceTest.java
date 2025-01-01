@@ -5,7 +5,9 @@ import org.example.backend.criteria.RoomSearchCriteria;
 import org.example.backend.dtos.RoomDTO;
 import org.example.backend.enums.RoomType;
 import org.example.backend.exception.exceptions.NoSuchRoomException;
+import org.example.backend.exception.exceptions.RoomDeletionException;
 import org.example.backend.exception.exceptions.RoomNumberAlreadyExistsException;
+import org.example.backend.model.Reservation;
 import org.example.backend.model.Room;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -194,5 +197,23 @@ public class RoomServiceTest extends BaseTests {
 
         verify(roomRepository).delete(room);
     }
+
+    @Test
+    void shouldThrowExceptionWhenRoomHasActiveReservationsAndCannotBeDeleted() {
+        Reservation reservation = new Reservation();
+        reservation.setRoomId(room);
+        reservation.setCheckInDate(LocalDate.of(2026, 12, 1));
+        reservation.setCheckOutDate(LocalDate.of(2026, 12, 7));
+
+        given(roomRepository.findById(1L)).willReturn(Optional.of(room));
+        given(reservationRepository.findByRoomId(room)).willReturn(List.of(reservation));
+
+        Throwable thrown = catchThrowable(() -> roomService.deleteRoom(1L));
+
+        assertThat(thrown).isInstanceOf(RoomDeletionException.class)
+                .hasMessage("Room with ID: 1 has active reservations and cannot be deleted.");
+
+    }
+
 
 }

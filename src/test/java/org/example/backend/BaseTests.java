@@ -17,6 +17,9 @@ import org.example.backend.repository.reservation.ReservationRepository;
 import org.example.backend.repository.room.AmenityRepository;
 import org.example.backend.repository.room.RoomCriteriaRepository;
 import org.example.backend.repository.room.RoomRepository;
+import org.example.backend.service.client.ClientService;
+import org.example.backend.service.reservation.ReservationService;
+import org.example.backend.service.room.AmenityService;
 import org.example.backend.service.room.RoomService;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.InjectMocks;
@@ -51,7 +54,16 @@ public class BaseTests {
     public AmenityMapper amenityMapper;
 
     @InjectMocks
+    public ClientService clientService;
+
+    @InjectMocks
     public RoomService roomService;
+
+    @InjectMocks
+    public ReservationService reservationService;
+
+    @InjectMocks
+    public AmenityService amenityService;
 
     public ClientDTO clientDTO;
     public RoomDTO roomDTO;
@@ -103,9 +115,9 @@ public class BaseTests {
         reservationDTO.setId(1L);
         reservationDTO.setCheckInDate(LocalDate.of(2026, 12, 1));
         reservationDTO.setCheckOutDate(LocalDate.of(2026, 12, 7));
-        reservationDTO.setNumberOfGuests(2L);
-        reservationDTO.setTotalPrice(500.00);
-        reservationDTO.setStatus("available");
+        reservationDTO.setNumberOfGuests(1L);
+        reservationDTO.setTotalPrice(900.00);
+        reservationDTO.setStatus("UNCONFIRMED");
         reservationDTO.setClientId(1L);
         reservationDTO.setRoomId(1L);
 
@@ -113,9 +125,9 @@ public class BaseTests {
         reservation.setId(1L);
         reservation.setCheckInDate(LocalDate.of(2026, 12, 1));
         reservation.setCheckOutDate(LocalDate.of(2026, 12, 7));
-        reservation.setNumberOfGuests(2L);
-        reservation.setTotalPrice(500.00);
-        reservation.setStatus("available");
+        reservation.setNumberOfGuests(1L);
+        reservation.setTotalPrice(900.00);
+        reservation.setStatus("UNCONFIRMED");
         reservation.setClientId(client);
         reservation.setRoomId(room);
 
