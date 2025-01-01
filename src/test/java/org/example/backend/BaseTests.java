@@ -158,4 +158,5 @@ public class BaseTests {
         amenityBreakfast.setDescription("A delicious continental breakfast");
         amenityBreakfast.setAdditionalCost(20.00);
     }
+
 }
