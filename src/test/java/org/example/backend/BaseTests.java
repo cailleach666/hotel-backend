@@ -20,6 +20,7 @@ import org.example.backend.repository.room.RoomRepository;
 import org.example.backend.service.client.ClientService;
 import org.example.backend.service.reservation.ReservationService;
 import org.example.backend.service.room.AmenityService;
+import org.example.backend.service.room.RoomAmenityService;
 import org.example.backend.service.room.RoomService;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.InjectMocks;
@@ -64,6 +65,9 @@ public class BaseTests {
 
     @InjectMocks
     public AmenityService amenityService;
+
+    @InjectMocks
+    public RoomAmenityService roomAmenityService;
 
     public ClientDTO clientDTO;
     public RoomDTO roomDTO;
