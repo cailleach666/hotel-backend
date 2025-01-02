@@ -18,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoomCriteriaRepository {
     private final EntityManager entityManager;
-    private static final String PRICE = "price";
 
     public static final String PRICE = "price";
 
