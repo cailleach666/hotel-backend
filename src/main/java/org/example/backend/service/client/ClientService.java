@@ -9,7 +9,6 @@ import org.example.backend.exception.exceptions.RoomDeletionException;
 import org.example.backend.mappers.ClientMapper;
 import org.example.backend.model.Client;
 import org.example.backend.model.Reservation;
-import org.example.backend.model.Room;
 import org.example.backend.repository.client.ClientRepository;
 import org.example.backend.repository.reservation.ReservationRepository;
 import org.springframework.stereotype.Service;
@@ -34,6 +33,10 @@ public class ClientService {
         Client savedClient = clientRepository.save(client);
         log.info("Client with email: {} created successfully", clientDTO.getEmail());
         return clientMapper.toClientDto(savedClient);
+    }
+
+    public ClientDTO getClientByEmail(String email) {
+        return clientMapper.toClientDto(clientRepository.findByEmail(email));
     }
 
     public Client getClientById(Long id) {

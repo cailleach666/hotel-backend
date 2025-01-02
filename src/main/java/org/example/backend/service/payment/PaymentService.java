@@ -71,6 +71,13 @@ public class PaymentService {
         return paymentMapper.toPaymentDTO(savedPayment);
     }
 
+    public PaymentDTO getPaymentById(Long id) {
+        log.info("Fetching payment with ID: {}", id);
+        Payment payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new NoSuchPaymentException(ERROR_MESSAGE));
+        return paymentMapper.toPaymentDTO(payment);
+    }
+
     public void deletePayment(Long id) {
         log.info("Deleting payment with ID: {}", id);
         Payment payment = paymentRepository.findById(id)

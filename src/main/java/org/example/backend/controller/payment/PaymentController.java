@@ -1,4 +1,4 @@
-package org.example.backend.controller;
+package org.example.backend.controller.payment;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -48,6 +48,17 @@ public class PaymentController {
         List<PaymentDTO> payments = paymentService.getAllPayments();
         log.info("Successfully retrieved {} payment records.", payments.size());
         return ResponseEntity.ok(payments);
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Retrieve payment by ID", description = "Fetches a single payment record by its ID.")
+    @ApiResponse(responseCode = "200", description = "Payment retrieved successfully")
+    @ApiResponse(responseCode = "404", description = "Payment not found")
+    public ResponseEntity<PaymentDTO> getPaymentById(@PathVariable Long id) {
+        log.info("Received request to retrieve payment with ID: {}", id);
+        PaymentDTO payment = paymentService.getPaymentById(id);
+        log.info("Successfully retrieved payment: {}", payment);
+        return ResponseEntity.ok(payment);
     }
 
     @PutMapping("/{id}")
