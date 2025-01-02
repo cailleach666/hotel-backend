@@ -30,7 +30,7 @@ public class ReservationService {
     private final RoomRepository roomRepository;
     private final ClientRepository clientRepository;
     private final RoomService roomService;
-    private static final String ERROR_MESSAGE = "Room not found!";
+    public static final String ROOM_NOT_FOUND_MESSAGE = "Room not found!";
 
     public ReservationDTO createReservation(ReservationDTO reservationDTO) {
         log.info("Creating reservation for client with ID: {} for room with ID: {}", reservationDTO.getClientId(), reservationDTO.getRoomId());
@@ -67,7 +67,7 @@ public class ReservationService {
         return reservationMapper.toReservationDTOList(reservations);
     }
 
-    private void validateReservationDates(LocalDate checkInDate, LocalDate checkOutDate) {
+    public void validateReservationDates(LocalDate checkInDate, LocalDate checkOutDate) {
         if (checkInDate == null || checkOutDate == null) {
             log.error("Check-in date or check-out date is null.");
             throw new IllegalArgumentException("Check-in date and check-out date must not be null.");
@@ -88,7 +88,7 @@ public class ReservationService {
     public Room getRoomById(Long id) {
         log.info("Fetching room with ID: {}", id);
         return roomRepository.findById(id)
-                .orElseThrow(() -> new NoSuchRoomException(ERROR_MESSAGE));
+                .orElseThrow(() -> new NoSuchRoomException(ROOM_NOT_FOUND_MESSAGE));
     }
 
     public Client getClientById(Long id) {
@@ -139,7 +139,6 @@ public class ReservationService {
         Room room = getRoomById(reservationMapper.toReservationDto(reservation).getRoomId());
         room.setAvailable(true);
         reservationRepository.delete(reservation);
-        reservationRepository.delete(reservation);
     }
 
     public List<LocalDate> getUnavailableDatesForRoom(Long roomId) {
@@ -166,7 +165,7 @@ public class ReservationService {
     private Double calculateTotalPrice(Reservation reservation) {
         long days = calculateDays(reservation);
         Room room = roomRepository.findById(reservation.getRoomId().getId())
-                .orElseThrow(() ->  new NoSuchRoomException(ERROR_MESSAGE));
+                .orElseThrow(() ->  new NoSuchRoomException(ROOM_NOT_FOUND_MESSAGE));
         return room.getPrice() * days;
     }
 
@@ -175,7 +174,7 @@ public class ReservationService {
      * @param room the room to validate against
      * @param numberOfGuests the number of guests to validate
      */
-    private void validateNumberOfGuests(Room room, Long numberOfGuests) {
+    public void validateNumberOfGuests(Room room, Long numberOfGuests) {
         if (numberOfGuests < 1) {
             log.error("Invalid number of guests: {}", numberOfGuests);
             throw new InvalidNumberOfGuestsException("There must be at least 1 guest.");
@@ -188,17 +187,17 @@ public class ReservationService {
             throw new InvalidNumberOfGuestsException("For a SINGLE room, only 1 guest is allowed.");
         }
 
-        if (roomType == RoomType.DOUBLE && (numberOfGuests < 1 || numberOfGuests > 2)) {
+        if (roomType == RoomType.DOUBLE && numberOfGuests > 2) {
             log.error("Invalid number of guests for DOUBLE room: {}", numberOfGuests);
             throw new InvalidNumberOfGuestsException("For a DOUBLE room, the number of guests must be between 1 and 2.");
         }
 
-        if (roomType == RoomType.TWIN && (numberOfGuests < 1 || numberOfGuests > 2)) {
+        if (roomType == RoomType.TWIN && numberOfGuests > 2) {
             log.error("Invalid number of guests for TWIN room: {}", numberOfGuests);
             throw new InvalidNumberOfGuestsException("For a TWIN room, the number of guests must be between 1 and 2.");
         }
 
-        if (roomType == RoomType.DELUXE && (numberOfGuests < 1 || numberOfGuests > 5)) {
+        if (roomType == RoomType.DELUXE && numberOfGuests > 5) {
             log.error("Invalid number of guests for DELUXE room: {}", numberOfGuests);
             throw new InvalidNumberOfGuestsException("For a DELUXE room, the number of guests must be between 1 and 5.");
         }
@@ -209,7 +208,7 @@ public class ReservationService {
 
         List<Reservation> reservations = reservationRepository
                 .findByRoomId(roomRepository.findById(roomId)
-                        .orElseThrow(() -> new NoSuchRoomException(ERROR_MESSAGE)));
+                        .orElseThrow(() -> new NoSuchRoomException(ROOM_NOT_FOUND_MESSAGE)));
 
         for (Reservation reservation : reservations) {
             if (checkInDate.isBefore(reservation.getCheckOutDate())

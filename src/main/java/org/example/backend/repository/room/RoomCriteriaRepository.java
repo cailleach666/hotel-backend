@@ -20,6 +20,8 @@ public class RoomCriteriaRepository {
     private final EntityManager entityManager;
     private static final String PRICE = "price";
 
+    public static final String PRICE = "price";
+
     public List<Room> getAllRooms(RoomSearchCriteria criteria, Pageable pageable) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Room> query = cb.createQuery(Room.class);
@@ -64,8 +66,6 @@ public class RoomCriteriaRepository {
         } else {
             query.orderBy(cb.desc(root.get(PRICE)));
         }
-
-        int page = criteria.getPage().orElseGet(() -> 0);
 
         TypedQuery<Room> typedQuery = entityManager.createQuery(query);
         typedQuery.setFirstResult((int) pageable.getOffset());
