@@ -1,0 +1,62 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: yourname
+      changes:
+        - createTable:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 3
+      author: yourname
+      changes:
+        - createTable:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: client_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 4
+      author: yourname
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_users_roles_client
+            baseTableName: users_roles
+            baseColumnNames: client_id
+            referencedTableName: client
+            referencedColumnNames: id
+            onDelete: CASCADE
+
+  - changeSet:
+      id: 5
+      author: yourname
+      changes:
+        - addForeignKeyConstraint:
+            constraintName: fk_users_roles_role
+            baseTableName: users_roles
+            baseColumnNames: role_id
+            referencedTableName: role
+            referencedColumnNames: id
+            onDelete: CASCADE

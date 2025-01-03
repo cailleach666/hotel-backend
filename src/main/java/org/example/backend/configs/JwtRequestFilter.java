@@ -20,6 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -77,7 +78,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
     private UsernamePasswordAuthenticationToken buildAuthenticationToken(Claims claims) {
-        List<String> roles = (List<String>) claims.get("roles");
+        Object rolesObject = claims.get("roles");
+        List<String> roles;
+
+        if (rolesObject instanceof List) {
+            roles = ((List<?>) rolesObject).stream()
+                    .filter(item -> item instanceof String) // Ensure all items are Strings
+                    .map(String.class::cast)
+                    .toList();
+        } else {
+            throw new IllegalArgumentException("Roles claim is not a List of Strings");
+        }
 
         List<SimpleGrantedAuthority> authorities = roles.stream()
                 .map(SimpleGrantedAuthority::new)
