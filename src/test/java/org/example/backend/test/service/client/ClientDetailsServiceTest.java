@@ -1,7 +1,6 @@
 package org.example.backend.test.service.client;
 
 import org.example.backend.model.Client;
-import org.example.backend.model.Privilege;
 import org.example.backend.model.Role;
 import org.example.backend.repository.client.ClientRepository;
 import org.example.backend.service.client.ClientDetailsService;
@@ -31,18 +30,18 @@ class ClientDetailsServiceTest {
 
     private Client testClient;
     private Role userRole;
-    private Privilege readPrivilege;
+//    private Privilege readPrivilege;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        readPrivilege = new Privilege();
-        readPrivilege.setName("READ_PRIVILEGE");
+//        readPrivilege = new Privilege();
+//        readPrivilege.setName("READ_PRIVILEGE");
 
         userRole = new Role();
         userRole.setName("ROLE_USER");
-        userRole.setPrivileges(List.of(readPrivilege));
+//        userRole.setPrivileges(List.of(readPrivilege));
 
         testClient = new Client();
         testClient.setEmail(TEST_EMAIL);
@@ -61,8 +60,8 @@ class ClientDetailsServiceTest {
         assertEquals("encodedPassword", userDetails.getPassword());
         assertTrue(userDetails.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_USER")));
-        assertTrue(userDetails.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("READ_PRIVILEGE")));
+//        assertTrue(userDetails.getAuthorities().stream()
+//                .anyMatch(auth -> auth.getAuthority().equals("READ_PRIVILEGE")));
     }
 
 
@@ -83,21 +82,21 @@ class ClientDetailsServiceTest {
         assertTrue(userDetails.getAuthorities().isEmpty());
     }
 
-    @Test
-    void getPrivileges_WithRoles_ShouldReturnPrivilegesList() {
-        List<String> privileges = clientDetailsService.getPrivileges(Collections.singletonList(userRole));
+//    @Test
+//    void getPrivileges_WithRoles_ShouldReturnPrivilegesList() {
+//        List<String> privileges = clientDetailsService.getPrivileges(Collections.singletonList(userRole));
+//
+//        assertEquals(2, privileges.size());
+//        assertTrue(privileges.contains("ROLE_USER"));
+//        assertTrue(privileges.contains("READ_PRIVILEGE"));
+//    }
 
-        assertEquals(2, privileges.size());
-        assertTrue(privileges.contains("ROLE_USER"));
-        assertTrue(privileges.contains("READ_PRIVILEGE"));
-    }
-
-    @Test
-    void getGrantedAuthorities_WithPrivileges_ShouldReturnGrantedAuthorities() {
-        List<GrantedAuthority> authorities = clientDetailsService.getGrantedAuthorities(List.of("ROLE_USER", "READ_PRIVILEGE"));
-
-        assertEquals(2, authorities.size());
-        assertTrue(authorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_USER")));
-        assertTrue(authorities.stream().anyMatch(auth -> auth.getAuthority().equals("READ_PRIVILEGE")));
-    }
+//    @Test
+//    void getGrantedAuthorities_WithPrivileges_ShouldReturnGrantedAuthorities() {
+//        List<GrantedAuthority> authorities = clientDetailsService.getGrantedAuthorities(List.of("ROLE_USER", "READ_PRIVILEGE"));
+//
+//        assertEquals(2, authorities.size());
+//        assertTrue(authorities.stream().anyMatch(auth -> auth.getAuthority().equals("ROLE_USER")));
+//        assertTrue(authorities.stream().anyMatch(auth -> auth.getAuthority().equals("READ_PRIVILEGE")));
+//    }
 }
