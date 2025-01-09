@@ -1,0 +1,49 @@
+#databaseChangeLog:
+#  - changeSet:
+#      id: create-privilege-table
+#      author: yara
+#      changes:
+#        - createTable:
+#            tableName: privilege
+#            columns:
+#              - column:
+#                  name: id
+#                  type: BIGINT
+#                  autoIncrement: true
+#                  constraints:
+#                    primaryKey: true
+#                    nullable: false
+#              - column:
+#                  name: name
+#                  type: VARCHAR(255)
+#                  constraints:
+#                    nullable: false
+#  - changeSet:
+#      id: create-privilege-role-association
+#      author: yara
+#      changes:
+#        - createTable:
+#            tableName: role_privilege
+#            columns:
+#              - column:
+#                  name: role_id
+#                  type: BIGINT
+#                  constraints:
+#                    nullable: false
+#              - column:
+#                  name: privilege_id
+#                  type: BIGINT
+#                  constraints:
+#                    nullable: false
+#        - addForeignKeyConstraint:
+#            baseTableName: role_privilege
+#            baseColumnNames: role_id
+#            referencedTableName: role
+#            referencedColumnNames: id
+#            onDelete: CASCADE
+#        - addForeignKeyConstraint:
+#            baseTableName: role_privilege
+#            baseColumnNames: privilege_id
+#            referencedTableName: privilege
+#            referencedColumnNames: id
+#            onDelete: CASCADE

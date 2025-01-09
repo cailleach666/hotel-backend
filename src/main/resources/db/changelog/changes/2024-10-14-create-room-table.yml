@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2024-10-14-create-room-table
+      author: yara
+      changes:
+        - createTable:
+            tableName: room
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+
+              - column:
+                  name: room_number
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: price
+                  type: decimal(10, 2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: available
+                  type: boolean
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: type
+                  type: varchar(20)
+                  constraints:
+                    nullable: false

@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/hotel
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: password123
+    depends_on:
+      - postgres
+    volumes:
+      - ./src/main/resources/application.properties:/app/application.properties
+    networks:
+      - backend
+
+
+  postgres:
+    image: postgres
+    container_name: hotel-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: hotel
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+
+volumes:
+  postgres_data:
+
+networks:
+  backend:

@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2024-11-22-create-client-table
+      author: yara
+      changes:
+        - addUniqueConstraint:
+            tableName: client
+            columnNames: email
+            constraintName: uq_client_email
