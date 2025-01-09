@@ -6,6 +6,8 @@
 This is a simple Spring Boot application for hotel room bookings. 
 The application allows users to search for available rooms and make bookings through a REST API.
 
+For more information visit wiki pages.
+
 ## How to Run the Application
 
 Here are 3 ways how you can run the application locally.
